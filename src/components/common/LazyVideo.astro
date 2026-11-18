@@ -1,0 +1,147 @@
+---
+interface Props {
+  poster?: string;
+  webm?: string;
+  mp4?: string;
+  mobileWebm?: string;
+  mobileMp4?: string;
+  breakpoint?: string;
+  width?: number;
+  height?: number;
+  class?: string;
+  loop?: boolean;
+  autoplay?: boolean;
+  fadeInOnReady?: boolean;
+  ariaLabel?: string;
+  ariaHidden?: boolean;
+}
+
+const {
+  poster,
+  webm,
+  mp4,
+  mobileWebm,
+  mobileMp4,
+  breakpoint = '(min-width: 640px)',
+  width,
+  height,
+  class: className = 'w-full h-full object-cover',
+  loop = true,
+  autoplay = true,
+  fadeInOnReady = false,
+  ariaLabel,
+  ariaHidden = !ariaLabel,
+} = Astro.props;
+---
+
+<video
+  data-lazy-video
+  data-autoplay={autoplay ? 'true' : 'false'}
+  data-fade-in={fadeInOnReady ? 'true' : 'false'}
+  data-breakpoint={breakpoint}
+  data-desktop-webm={webm}
+  data-desktop-mp4={mp4}
+  data-mobile-webm={mobileWebm}
+  data-mobile-mp4={mobileMp4}
+  poster={poster}
+  width={width}
+  height={height}
+  muted
+  loop={loop}
+  playsinline
+  preload="none"
+  aria-label={ariaHidden ? undefined : ariaLabel}
+  aria-hidden={ariaHidden ? 'true' : undefined}
+  class:list={[
+    className,
+    fadeInOnReady && 'opacity-0 transition-opacity duration-300',
+  ]}
+>
+</video>
+
+<script>
+  let observer: IntersectionObserver | null = null;
+
+  const hydrateSources = (video: HTMLVideoElement) => {
+    if (video.dataset.hydrated === 'true') return;
+
+    const bp = video.dataset.breakpoint || '(min-width: 640px)';
+    const isDesktop = window.matchMedia(bp).matches;
+    const hasMobileOverride = Boolean(video.dataset.mobileWebm || video.dataset.mobileMp4);
+
+    const webm = isDesktop || !hasMobileOverride ? video.dataset.desktopWebm : video.dataset.mobileWebm;
+    const mp4 = isDesktop || !hasMobileOverride ? video.dataset.desktopMp4 : video.dataset.mobileMp4;
+
+    if (webm) {
+      const s = document.createElement('source');
+      s.src = webm;
+      s.type = 'video/webm';
+      video.appendChild(s);
+    }
+    if (mp4) {
+      const s = document.createElement('source');
+      s.src = mp4;
+      s.type = 'video/mp4';
+      video.appendChild(s);
+    }
+
+    if (webm || mp4) {
+      if (video.dataset.fadeIn === 'true') {
+        video.addEventListener(
+          'loadeddata',
+          () => {
+            video.classList.remove('opacity-0');
+            video.classList.add('opacity-100');
+          },
+          { once: true },
+        );
+      }
+      video.load();
+    }
+
+    video.dataset.hydrated = 'true';
+  };
+
+  const initLazyVideos = () => {
+    observer?.disconnect();
+    observer = null;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const videos = document.querySelectorAll<HTMLVideoElement>('video[data-lazy-video]');
+    if (!videos.length) return;
+
+    observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const video = entry.target as HTMLVideoElement;
+          video.dataset.inView = entry.isIntersecting ? 'true' : 'false';
+
+          if (entry.isIntersecting) {
+            hydrateSources(video);
+            if (video.dataset.autoplay === 'true') {
+              video
+                .play()
+                .then(() => {
+                  if (video.dataset.inView !== 'true') video.pause();
+                })
+                .catch(() => {});
+            }
+          } else {
+            video.pause();
+          }
+        }
+      },
+      { rootMargin: '200px 0px' },
+    );
+
+    videos.forEach((v) => observer!.observe(v));
+  };
+
+  initLazyVideos();
+  document.addEventListener('astro:page-load', initLazyVideos);
+  document.addEventListener('astro:before-swap', () => {
+    observer?.disconnect();
+    observer = null;
+  });
+</script>

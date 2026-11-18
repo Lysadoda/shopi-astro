@@ -1,16 +1,11 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroSection from '../components/home/HeroSection.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="Shopify" locale="en" routeKey="home">
+  <HeroSection locale="en" />
+  <section class="min-h-[60vh] bg-section-dark-bg text-section-dark-text pt-hero-top flex items-center justify-center">
+    <h1 class="text-t2">Shopify Home (EN) — Shell Ready</h1>
+  </section>
+</BaseLayout>

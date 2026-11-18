@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page not found — Shopify" locale="en" routeKey="home" noindex>
+  <section class="min-h-[70vh] bg-section-dark-bg text-section-dark-text pt-hero-top flex items-center">
+    <div class="container py-24 flex flex-col items-start gap-y-6">
+      <p class="font-mono text-xs uppercase tracking-[0.08em] text-avocado">404</p>
+      <h1 class="text-dsp text-white text-balance">Page not found</h1>
+      <p class="text-body-lg text-gray-c max-w-[50ch]">
+        The page you are looking for does not exist or has been moved.
+      </p>
+      <div class="flex flex-wrap gap-4 pt-2">
+        <a
+          href="/"
+          class="inline-block px-button-px py-button-py rounded-button border-2 border-button-dark-primary-border bg-button-dark-primary-bg text-button-dark-primary-text font-button-weight hover:bg-button-dark-primary-bg-hover"
+        >
+          Go to English Home
+        </a>
+        <a
+          href="/pl"
+          class="inline-block px-button-px py-button-py rounded-button border-2 border-button-dark-secondary-border bg-button-dark-secondary-bg text-button-dark-secondary-text font-button-weight hover:border-button-dark-secondary-border-hover"
+        >
+          Go to Polish Home (/pl)
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

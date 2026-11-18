@@ -1,0 +1,406 @@
+---
+import Icon from '../common/Icon.astro';
+import type { Locale, RouteKey } from '../../data/routes';
+import { getRoutePath } from '../../data/routes';
+
+interface Props {
+  locale: Locale;
+  routeKey?: RouteKey;
+}
+
+const { locale, routeKey = 'home' } = Astro.props;
+
+const enRoute = getRoutePath(routeKey, 'en');
+const plRoute = getRoutePath(routeKey, 'pl');
+
+const footerColumns = [
+  {
+    heading: 'Shopify',
+    links: [
+      { label: 'What is Shopify?', href: getRoutePath('blog-what-is-shopify', locale) },
+      { label: 'Shopify Editions', href: getRoutePath('editions', locale) },
+      { label: 'Careers', href: 'https://www.shopify.com/careers', external: true },
+      { label: 'Investors', href: 'https://www.shopify.com/investors', external: true },
+      { label: 'Newsroom', href: 'https://www.shopify.com/news', external: true },
+    ],
+  },
+  {
+    heading: 'Ecosystem',
+    links: [
+      { label: 'Developer Docs', href: 'https://shopify.dev/docs', external: true },
+      {
+        label: 'Theme Store',
+        href: `https://themes.shopify.com/?locale=${locale}`,
+        external: true,
+      },
+      {
+        label: 'App Store',
+        href: `https://apps.shopify.com/?locale=${locale}`,
+        external: true,
+      },
+      { label: 'Partners', href: getRoutePath('partners', locale) },
+      { label: 'Affiliates', href: getRoutePath('affiliates', locale) },
+    ],
+  },
+  {
+    heading: 'Resources',
+    links: [
+      { label: 'Blog', href: getRoutePath('blog', locale) },
+      { label: 'Compare Shopify', href: getRoutePath('compare', locale) },
+      { label: 'Free Tools', href: getRoutePath('tools', locale) },
+      { label: 'Changelog', href: 'https://changelog.shopify.com', external: true },
+    ],
+  },
+  {
+    heading: 'Support',
+    links: [
+      {
+        label: 'Shopify Help Center',
+        href: `https://help.shopify.com/${locale}`,
+        external: true,
+      },
+      { label: 'Community Forum', href: 'https://community.shopify.com/', external: true },
+      { label: 'Hire a Partner', href: getRoutePath('partners-directory', locale) },
+      { label: 'Service Status', href: 'https://shopifystatus.com', external: true },
+    ],
+  },
+] as const;
+
+const legalLinks = [
+  { label: 'Terms of Service', href: getRoutePath('legal-terms', locale) },
+  { label: 'Legal', href: getRoutePath('legal', locale) },
+  { label: 'Privacy Policy', href: getRoutePath('legal-privacy', locale) },
+  { label: 'Sitemap', href: getRoutePath('sitemap', locale) },
+] as const;
+
+const socialLinks = [
+  {
+    name: 'Facebook',
+    icon: 'icon-facebook',
+    href: 'https://www.facebook.com/shopify',
+  },
+  { name: 'Twitter', icon: 'icon-twitter', href: 'https://twitter.com/shopify' },
+  {
+    name: 'YouTube',
+    icon: 'icon-youtube',
+    href: 'https://www.youtube.com/user/shopify',
+  },
+  {
+    name: 'Instagram',
+    icon: 'icon-instagram',
+    href: 'https://www.instagram.com/shopify/',
+  },
+  { name: 'TikTok', icon: 'icon-tiktok', href: 'https://www.tiktok.com/@shopify' },
+  {
+    name: 'LinkedIn',
+    icon: 'icon-linkedin',
+    href: 'https://www.linkedin.com/company/shopify',
+  },
+  {
+    name: 'Pinterest',
+    icon: 'icon-pinterest',
+    href: 'https://www.pinterest.com/shopify/',
+  },
+] as const;
+
+const regionTriggerText = locale === 'pl' ? 'Poland | Polski' : 'USA | English';
+---
+
+<footer
+  class="py-20 px-8 gap-y-14 font-sans max-sm:flex max-sm:flex-col sm:grid sm:grid-cols-3 sm:gap-x-gutter sm:px-margin md:grid-cols-5 xl:px-auto-xl bg-black text-[#a1a1aa] relative z-10"
+  data-component-name="footer"
+>
+  <a href="#main" class="w-11 h-[50px] text-white" aria-label="Back to the top">
+    <Icon name="logo-shopify-bag" class="w-full h-full" />
+  </a>
+
+  <ul
+    class="gap-y-14 max-sm:flex max-sm:flex-col max-sm:pb-2 sm:col-span-2 sm:grid sm:grid-cols-2 sm:gap-x-gutter md:col-span-4 md:grid-cols-4"
+  >
+    {
+      footerColumns.map((col) => (
+        <li>
+          <h3 class="text-xl leading-[20px] font-medium mb-6 text-white">{col.heading}</h3>
+          <ul class="flex flex-col gap-y-4">
+            {col.links.map((item) => (
+              <li>
+                <a
+                  class="transition-colors duration-200 hover:text-white"
+                  href={item.href}
+                  rel={'external' in item && item.external ? 'noopener noreferrer' : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div
+    class="flex w-full gap-y-7 border-t pt-10 max-sm:flex-col sm:col-span-3 sm:flex-wrap sm:gap-x-10 sm:items-center md:col-span-5 border-[#121C1E]"
+  >
+    <div
+      data-component-name="regions"
+      class="relative group"
+      data-en-route={enRoute}
+      data-pl-route={plRoute}
+    >
+      <button
+        popovertarget="language-selector-popover"
+        type="button"
+        aria-controls="language-selector-popover"
+        aria-haspopup="dialog"
+        class="bg-transparent mx-auto md:inline-block md:[anchor-name:--lang-trigger] text-[#E0E0E0] hover:text-white"
+        data-component-name="region-selector-trigger"
+        aria-label={`${regionTriggerText} — Change region & language`}
+      >
+        <span class="inline-flex items-center whitespace-nowrap gap-x-1">
+          <svg
+            fill="none"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+            class="shrink-0 text-white"
+            height="16"
+            width="16"
+          >
+            <circle
+              cx="10"
+              cy="10"
+              r="8.5"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"></circle>
+            <ellipse
+              cx="10"
+              cy="10"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              rx="3"
+              ry="8.5"></ellipse>
+            <ellipse
+              cx="10"
+              cy="10"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              rx="8.5"
+              ry="3"></ellipse>
+          </svg>
+          <span class="truncate">{regionTriggerText}</span>
+          <svg
+            fill="none"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+            width="16"
+            height="16"
+            class="rotate-180 shrink-0 transition-transform duration-200 group-has-[#language-selector-popover:popover-open]:rotate-0 text-white"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m4 13 6-6 6 6"></path>
+          </svg>
+        </span>
+      </button>
+
+      <div
+        id="language-selector-popover"
+        popover="auto"
+        role="dialog"
+        aria-label="Choose a region & language"
+        data-color-mode="dark"
+        data-component-name="language-selector-panel"
+        class="language-selector-popover fixed top-auto m-0 border-0 bg-[#171719] text-white pt-6 px-6 pb-10 font-base max-h-[90vh] overflow-y-auto bottom-0 left-0 right-0 w-full md:[position-anchor:--lang-trigger] md:bottom-[anchor(top)]! md:start-[anchor(start)]! md:end-auto! md:w-96! md:rounded-2xl! md:[margin-bottom:12px]!"
+      >
+        <div class="flex flex-col gap-6">
+          <div class="flex items-center justify-between">
+            <h2 class="text-theme-content text-t7">Choose a region &amp; language</h2>
+            <button
+              popovertarget="language-selector-popover"
+              popovertargetaction="hide"
+              type="button"
+              class="text-zinc-400 hover:text-white transition-colors"
+              aria-label="Close modal"
+              data-component-name="region-selector-close"
+            >
+              <svg
+                fill="none"
+                viewBox="0 0 20 20"
+                aria-hidden="true"
+                class="text-current"
+                height="20"
+                width="20"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  d="m4.34 4.34 11.32 11.32M15.66 4.34 4.34 15.66"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div class="space-y-2">
+            <div class="[&_label]:text-zinc-400 [&_svg]:text-zinc-400">
+              <div class="relative">
+                <select
+                  class="px-4 block w-full duration-300 ease-out peer ring-1 ring-inset rounded-lg focus-within:outline-0 appearance-none pb-2 pt-6 ring-zinc-600 bg-transparent text-white"
+                  id="region-country-select"
+                  name="region-country-select"
+                >
+                  <option value="US" selected={locale === 'en'}>USA</option>
+                  <option value="PL" selected={locale === 'pl'}>Poland</option>
+                </select>
+                <label
+                  class="absolute pointer-events-none duration-300 ease-out origin-top-left rtl:origin-top-right -translate-y-full scale-75 top-8 start-4 line-clamp-1"
+                  for="region-country-select"
+                >
+                  Select region
+                </label>
+                <svg
+                  fill="none"
+                  viewBox="0 0 20 20"
+                  aria-hidden="true"
+                  width="24"
+                  height="24"
+                  class="rotate-180 absolute top-1/2 -translate-y-1/2 end-4 pointer-events-none"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m4 13 6-6 6 6"></path>
+                </svg>
+              </div>
+            </div>
+
+            <div class="[&_label]:text-zinc-400 [&_svg]:text-zinc-400">
+              <div class="relative">
+                <select
+                  class="px-4 block w-full duration-300 ease-out peer ring-1 ring-inset rounded-lg focus-within:outline-0 appearance-none pb-2 pt-6 ring-zinc-600 bg-transparent text-white"
+                  id="region-language-select"
+                  name="region-language-select"
+                >
+                  <option value="en" selected={locale === 'en'}>English</option>
+                  <option value="pl" selected={locale === 'pl'}>Polski</option>
+                </select>
+                <label
+                  class="absolute pointer-events-none duration-300 ease-out origin-top-left rtl:origin-top-right -translate-y-full scale-75 top-8 start-4 line-clamp-1"
+                  for="region-language-select"
+                >
+                  Select language
+                </label>
+                <svg
+                  fill="none"
+                  viewBox="0 0 20 20"
+                  aria-hidden="true"
+                  width="24"
+                  height="24"
+                  class="rotate-180 absolute top-1/2 -translate-y-1/2 end-4 pointer-events-none"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="m4 13 6-6 6 6"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <a
+            href={locale === 'pl' ? plRoute : enRoute}
+            class="self-center overflow-hidden max-w-full px-button-px py-button-py ring-inset transition-all duration-150 focus-visible:outline-offset-2 focus-visible:outline-state-focus border-2 focus-visible:outline font-component-button-primary md:px-button-lg-px md:py-button-lg-py inline-flex items-center gap-2 text-component-button-primary-lg w-full justify-center bg-white text-black rounded-full hover:bg-zinc-300"
+            data-component-name="region-selector-confirm"
+          >
+            <span>Confirm</span>
+            <svg fill="none" viewBox="0 0 20 20" aria-hidden="true" height="24" width="24">
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                d="m12.12 4.34 5.59 5.59a.1.1 0 0 1 0 .14l-5.59 5.59M17.78 10H2.22"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <ul class="flex gap-x-10 max-sm:flex-col max-sm:gap-y-4 max-md:w-full md:me-auto">
+      {
+        legalLinks.map((item) => (
+          <li>
+            <a class="transition-colors duration-200 hover:text-white" href={item.href}>
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+      <li>
+        <a
+          class="transition-colors duration-200 hover:text-white"
+          href={`https://privacy.shopify.com/${locale}`}
+          rel="noopener noreferrer"
+        >
+          <span class="flex items-center gap-1.5">
+            Your Privacy Choices
+            <img
+              src="https://cdn.shopify.com/b/shopify-brochure2-assets/8051dee1dd72e78a9528a16c062cff66.svg"
+              alt="California Consumer Privacy Act (CCPA) Opt-Out Icon"
+              class="h-3.5 w-7.5 shrink-0"
+              width="30"
+              height="14"
+              loading="lazy"
+            />
+          </span>
+        </a>
+      </li>
+    </ul>
+
+    <ul class="flex flex-wrap gap-4 max-lg:w-full">
+      {
+        socialLinks.map((social) => (
+          <li class="h-8 w-8 hover:opacity-70 transition-opacity duration-200 fill-white text-black">
+            <a
+              href={social.href}
+              rel="me nofollow noopener noreferrer"
+              target="_blank"
+              aria-label={`External source: ${social.name} (Opens in a new window)`}
+            >
+              <Icon name={social.icon} class="w-full h-full" />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</footer>
+
+<script>
+  const container = document.querySelector<HTMLElement>('[data-component-name="regions"]');
+  const countrySelect = document.getElementById('region-country-select') as HTMLSelectElement | null;
+  const languageSelect = document.getElementById('region-language-select') as HTMLSelectElement | null;
+  const confirmLink = container?.querySelector<HTMLAnchorElement>(
+    '[data-component-name="region-selector-confirm"]',
+  );
+
+  if (container && countrySelect && languageSelect && confirmLink) {
+    const enRoute = container.dataset.enRoute ?? '/';
+    const plRoute = container.dataset.plRoute ?? '/pl';
+
+    const syncTarget = (source: 'country' | 'language') => {
+      if (source === 'country') {
+        languageSelect.value = countrySelect.value === 'PL' ? 'pl' : 'en';
+      } else {
+        countrySelect.value = languageSelect.value === 'pl' ? 'PL' : 'US';
+      }
+      confirmLink.href = languageSelect.value === 'pl' ? plRoute : enRoute;
+    };
+
+    countrySelect.addEventListener('change', () => syncTarget('country'));
+    languageSelect.addEventListener('change', () => syncTarget('language'));
+  }
+</script>

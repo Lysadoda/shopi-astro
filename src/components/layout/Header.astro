@@ -1,0 +1,270 @@
+---
+import Icon from '../common/Icon.astro';
+import NavLevel2 from './NavLevel2.astro';
+import type { Locale } from '../../data/routes';
+import { getRoutePath } from '../../data/routes';
+import { getSimpleTopLinks } from '../../data/navigation';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const homeHref = getRoutePath('home', locale);
+const editionsHref = getRoutePath('editions-fall2026', locale);
+const topLinks = getSimpleTopLinks(locale);
+const loginHref = '/login?ui_locales=en';
+const signupHref =
+  'https://admin.shopify.com/signup?locale=en&language=en&signup_page=https%3A%2F%2Fwww.shopify.com%2Fpl&signup_types%5B%5D=paid_trial_experience';
+---
+
+<header
+  class="bk-header font-base flex w-full z-50 text-component-header-content sm:px-margin sm:max-lg:pe-[calc(var(--spacing-margin)-13px)] xl:px-auto-xl before:bg-gradient-to-b before:from-component-header-bg before:to-transparent before:absolute before:top-0 before:start-0 before:will-change-[opacity] before:pointer-events-none before:h-10 before:w-full before:z-100 before:transition-opacity before:duration-200 before:opacity-0 before:translate-y-global-header max-lg:[&:has(nav_#bk-nav-hamburger:checked)]:before:opacity-100 md:max-lg:[&:has(nav_#bk-nav-hamburger:checked~_ul_input:checked~_.level2-media-container)]:before:content-none lg:[&:has(.level1-item:hover)]:before:opacity-100 lg:[&:has(.level1-item:focus-within)]:before:opacity-100 lg:before:delay-[350ms] lg:[&:has(.level1-item:hover)]:before:delay-100 lg:[&:has(.level1-item:focus-within)]:before:delay-100 after:bg-component-header-bg after:absolute after:top-0 after:start-0 after:will-change-[opacity] after:pointer-events-none after:h-full after:w-full after:z-0 after:transition-opacity after:duration-200 after:delay-[350ms] lg:[&:has(.level1-item:hover)]:after:delay-100 lg:[&:has(.level1-item:focus-within)]:after:delay-100 lg:[&:has(.level1-item:hover)]:after:opacity-100 lg:[&:has(.level1-item:focus-within)]:after:opacity-100 sticky top-0 start-0 -mb-global-header after:opacity-0 supports-[container-type:scroll-state]:[container-type:scroll-state] supports-[container-type:scroll-state]:[container-name:bk-header] supports-[container-type:scroll-state]:after:[@container_bk-header_scroll-state(stuck:top)]:opacity-100 supports-[container-type:scroll-state]:after:[@container_bk-header_scroll-state(stuck:top)]:delay-0 not-supports-[container-type:scroll-state]:after:opacity-100 not-supports-[container-type:scroll-state]:after:delay-0"
+  data-color-mode="dark"
+  data-component-name="global-nav"
+>
+  <nav
+    class="flex w-full h-global-header z-20 max-sm:ps-margin max-lg:gap-x-3.5 lg:gap-x-7 min-[1300px]:gap-x-8"
+    data-component-name="desktop-main-navigation"
+    aria-label="Primary"
+  >
+    <div class="flex shrink-0 items-center z-20 max-lg:me-auto">
+      <div class="relative flex items-center">
+        <a href={homeHref} data-component-name="logo-home" class="inline-block shrink-0 relative z-20">
+          <img
+            src="https://cdn.shopify.com/b/shopify-brochure2-assets/d9340911ca8c679b148dd4a205ad2ffa.svg"
+            alt="Shopify"
+            class="h-9"
+            width="121"
+            height="36"
+            data-component-name="shopify-logo"
+          />
+        </a>
+      </div>
+    </div>
+
+    <input type="checkbox" id="bk-nav-hamburger" class="peer/l1Mobile hidden" aria-hidden="true" />
+
+    <ul
+      id="bk-nav-level1-items"
+      class="flex max-lg:fixed max-lg:top-0 max-lg:start-0 max-lg:w-full max-lg:pointer-events-none max-lg:opacity-0 max-lg:transition-opacity max-lg:duration-300 max-lg:peer-checked/l1Mobile:opacity-100 max-lg:peer-checked/l1Mobile:pointer-events-auto max-lg:will-change-[opacity] max-lg:flex-col max-lg:h-full max-lg:px-margin max-lg:pt-24 max-sm:pb-[136px] sm:max-lg:pb-[76px] max-lg:bg-component-header-bg max-lg:z-10 max-lg:no-scrollbar max-lg:overflow-y-auto group lg:gap-x-7 min-[1300px]:gap-x-8 lg:me-auto"
+    >
+      <li
+        class="font-semi-medium whitespace-nowrap max-lg:border-b max-lg:border-component-header-level1-border lg:flex level1-item lg:z-30 lg:hover:z-40 lg:before:absolute lg:before:bottom-0 lg:before:start-0 lg:before:w-full lg:before:h-6 lg:before:pointer-events-none lg:hover:before:pointer-events-auto"
+      >
+        <label
+          for="bk-nav-why-shopify"
+          tabindex="0"
+          role="button"
+          class="relative flex items-center cursor-pointer max-lg:py-4 max-lg:justify-between max-lg:font-[330] max-lg:text-2xl md:max-lg:text-3xl lg:group-hover:opacity-50 lg:group-hover:hover:opacity-100 lg:transition-opacity lg:duration-300 lg:[.level1-item:hover_&]:opacity-100 lg:gap-x-0.5 lg:before:absolute lg:before:top-0 lg:before:start-0 lg:before:w-[calc(100%+4rem)] lg:before:h-full lg:ltr:before:-translate-x-8 lg:rtl:before:translate-x-8"
+        >
+          Why Shopify
+          <Icon name="icon-arrow" class="w-6 h-6 lg:hidden rtl:-scale-x-100" />
+          <Icon
+            name="icon-chevron"
+            class="w-4 h-4 mt-[3px] shrink-0 transition-transform duration-200 [.level1-item:hover_&]:-scale-y-100 [.level1-item:focus-within_&]:-scale-y-100 max-lg:hidden"
+          />
+        </label>
+        <NavLevel2 variant="why-shopify" locale={locale} />
+      </li>
+
+      <li
+        class="font-semi-medium whitespace-nowrap max-lg:border-b max-lg:border-component-header-level1-border lg:flex level1-item lg:z-30 lg:hover:z-40 lg:before:absolute lg:before:bottom-0 lg:before:start-0 lg:before:w-full lg:before:h-6 lg:before:pointer-events-none lg:hover:before:pointer-events-auto"
+      >
+        <label
+          for="bk-nav-products"
+          tabindex="0"
+          role="button"
+          class="relative flex items-center cursor-pointer max-lg:py-4 max-lg:justify-between max-lg:font-[330] max-lg:text-2xl md:max-lg:text-3xl lg:group-hover:opacity-50 lg:group-hover:hover:opacity-100 lg:transition-opacity lg:duration-300 lg:[.level1-item:hover_&]:opacity-100 lg:gap-x-0.5 lg:before:absolute lg:before:top-0 lg:before:start-0 lg:before:w-[calc(100%+4rem)] lg:before:h-full lg:ltr:before:-translate-x-8 lg:rtl:before:translate-x-8"
+        >
+          Products
+          <Icon name="icon-arrow" class="w-6 h-6 lg:hidden rtl:-scale-x-100" />
+          <Icon
+            name="icon-chevron"
+            class="w-4 h-4 mt-[3px] shrink-0 transition-transform duration-200 [.level1-item:hover_&]:-scale-y-100 [.level1-item:focus-within_&]:-scale-y-100 max-lg:hidden"
+          />
+        </label>
+        <NavLevel2 variant="products" locale={locale} />
+      </li>
+
+      {
+        topLinks.map((link) => (
+          <li class="font-semi-medium whitespace-nowrap max-lg:border-b max-lg:border-component-header-level1-border lg:flex lg:z-20">
+            <a
+              href={getRoutePath(link.routeKey, locale)}
+              class="flex items-center max-lg:py-4 max-lg:justify-between max-lg:font-[330] max-lg:text-2xl md:max-lg:text-3xl lg:group-hover:opacity-50 lg:group-hover:hover:opacity-100 lg:transition-opacity lg:duration-300"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+
+      <li class="font-semi-medium whitespace-nowrap max-lg:border-b max-lg:border-component-header-level1-border lg:flex lg:z-20">
+        <a
+          href={editionsHref}
+          class="self-center overflow-hidden max-w-full px-button-px py-button-py ring-inset rounded-component-button transition-all duration-150 focus-visible:outline-offset-2 focus-visible:outline-state-focus border-2 focus-visible:outline bg-component-button-secondary-bg border-component-button-secondary-border text-component-button-secondary-content font-component-button-secondary text-component-button-secondary-sm max-lg:[&>picture]:hidden max-lg:border-none max-lg:px-0 max-lg:transition-none lg:flex lg:items-center lg:py-2 lg:ps-[13px] lg:pe-[13px] lg:gap-x-1 lg:ring-0 lg:hover:ring-0 lg:focus:ring-0 lg:bg-transparent lg:text-component-header-content lg:hover:text-component-header-content lg:focus:text-component-header-content lg:max-[1300px]:px-2 flex items-center max-lg:py-4 max-lg:justify-between max-lg:font-[330] max-lg:text-2xl md:max-lg:text-3xl lg:group-hover:opacity-50 lg:group-hover:hover:opacity-100 lg:transition-opacity lg:duration-300"
+          data-component-name="button"
+        >
+          <picture data-component-name="image">
+            <img
+              alt=""
+              class="w-[18px] h-[18px] shrink-0 pointer-events-none -translate-y-[.5px]"
+              height="18"
+              width="18"
+              src="https://cdn.shopify.com/b/shopify-brochure2-assets/b92011e8f994db7276899016b2850cb4.png?originalWidth=36&originalHeight=36&width=18&height=18"
+              srcset="https://cdn.shopify.com/b/shopify-brochure2-assets/b92011e8f994db7276899016b2850cb4.png?originalWidth=18&originalHeight=18 1x, https://cdn.shopify.com/b/shopify-brochure2-assets/b92011e8f994db7276899016b2850cb4.png?originalWidth=36&originalHeight=36 2x"
+            />
+          </picture>
+          <span class="pointer-events-none lg:hidden min-[1300px]:inline-flex">Fall ’26 Edition</span>
+        </a>
+      </li>
+    </ul>
+
+    <a
+      data-component-name="start-free-trial"
+      class="group focus:outline-state-focus outline-2 outline-offset-2 transition-colors duration-150 ease-in-out font-component-link text-component-link-content hover:text-component-link-content-hover text-component-link-sm font-normal max-lg:hover:[&>span]:underline lg:[&>span]:no-underline lg:hover:[&>span]:underline z-20 lg:hidden items-center flex sm:hidden"
+      rel="noopener noreferrer"
+      href={signupHref}
+    >
+      <span class="inline underline hover:no-underline">Start for free</span>
+    </a>
+
+    <ul
+      class="z-20 lg:gap-x-7 min-[1300px]:gap-x-8 flex-row items-center sm:gap-5 hidden sm:flex sm:max-md:min-w-0"
+      data-component-name="mobile-navigation-drawer-lower"
+    >
+      <li class="leading-[0] max-sm:hidden">
+        <a
+          data-component-name="login"
+          class="group focus:outline-state-focus outline-2 outline-offset-2 transition-colors duration-150 ease-in-out font-component-link text-component-link-content hover:text-component-link-content-hover text-component-link-sm font-normal max-lg:hover:[&>span]:underline lg:[&>span]:no-underline lg:hover:[&>span]:underline whitespace-nowrap"
+          href={loginHref}
+        >
+          <span class="inline underline hover:no-underline">Log in</span>
+        </a>
+      </li>
+      <li class="leading-[0] sm:max-md:min-w-0">
+        <a
+          href={signupHref}
+          rel="noopener noreferrer"
+          class="inline-block self-center overflow-hidden max-w-full px-button-px py-button-py ring-inset rounded-component-button transition-all duration-150 focus-visible:outline-offset-2 focus-visible:outline-state-focus border-2 focus-visible:outline bg-component-button-primary-bg hover:bg-component-button-primary-bg-hover active:bg-component-button-primary-bg-active border-component-button-primary-border text-component-button-primary-content hover:text-component-button-primary-content-hover font-component-button-primary text-component-button-primary-sm sm:max-md:whitespace-normal md:whitespace-nowrap"
+          data-component-name="start-free-trial"
+        >
+          Start for free
+        </a>
+      </li>
+    </ul>
+
+    <label
+      for="bk-nav-hamburger"
+      class="flex flex-col items-center justify-center gap-y-1 h-full w-[50px] shrink-0 cursor-pointer select-none z-20 before:h-0.5 before:w-[18px] before:bg-component-header-content before:duration-500 before:transition-transform before:origin-top-left peer-checked/l1Mobile:before:rotate-45 peer-checked/l1Mobile:before:translate-x-1 peer-checked/l1Mobile:[&_span]:opacity-0 peer-checked/l1Mobile:[&_span]:delay-0 after:h-0.5 after:w-[18px] after:bg-component-header-content after:duration-500 after:transition-transform after:origin-bottom-left peer-checked/l1Mobile:after:-rotate-45 peer-checked/l1Mobile:after:translate-x-1 lg:hidden"
+      aria-label="Menu"
+      role="button"
+      aria-controls="bk-nav-level1-items"
+      aria-expanded="false"
+      data-component-name="navigation-toggle"
+      tabindex="0"
+    >
+      <span class="h-0.5 w-[18px] bg-component-header-content duration-500 transition-opacity delay-[100ms]"></span>
+    </label>
+
+    <ul
+      class="z-20 lg:gap-x-7 min-[1300px]:gap-x-8 max-lg:flex max-lg:invisible max-lg:opacity-0 max-lg:pointer-events-none max-lg:will-change-[opacity] max-lg:transition-[opacity,visibility] max-lg:duration-300 motion-reduce:transition-none max-lg:peer-checked/l1Mobile:visible max-lg:peer-checked/l1Mobile:opacity-100 max-lg:peer-checked/l1Mobile:pointer-events-auto lg:hidden max-lg:fixed max-lg:bottom-0 max-lg:start-0 max-lg:w-full max-lg:flex-col sm:max-lg:flex-row sm:max-lg:items-center max-lg:py-4 max-lg:px-margin max-lg:gap-4 max-lg:bg-component-header-bg max-lg:text-center max-lg:border-t max-lg:border-component-header-level1-border sm:max-lg:[&>li]:grow max-lg:before:absolute max-lg:before:top-[-1px] max-lg:before:start-0 max-lg:before:h-10 max-lg:before:w-full max-lg:before:-translate-y-10 max-lg:before:bg-gradient-to-b max-lg:before:from-transparent max-lg:before:to-component-header-bg"
+      data-component-name="mobile-navigation-drawer-lower"
+    >
+      <li class="leading-[0]">
+        <a
+          href={loginHref}
+          class="inline-block self-center overflow-hidden max-w-full px-button-px py-button-py ring-inset rounded-component-button transition-all duration-150 focus-visible:outline-offset-2 focus-visible:outline-state-focus border-2 focus-visible:outline bg-component-button-secondary-bg hover:bg-component-button-secondary-bg-hover border-component-button-secondary-border text-component-button-secondary-content font-component-button-secondary hover:ring-1 text-component-button-secondary-sm max-lg:w-full whitespace-nowrap"
+          data-component-name="login"
+        >
+          Log in
+        </a>
+      </li>
+      <li class="leading-[0]">
+        <a
+          href={signupHref}
+          rel="noopener noreferrer"
+          class="inline-block self-center overflow-hidden max-w-full px-button-px py-button-py ring-inset rounded-component-button transition-all duration-150 focus-visible:outline-offset-2 focus-visible:outline-state-focus border-2 focus-visible:outline bg-component-button-primary-bg hover:bg-component-button-primary-bg-hover border-component-button-primary-border text-component-button-primary-content font-component-button-primary text-component-button-primary-sm max-lg:w-full whitespace-nowrap"
+          data-component-name="start-free-trial"
+        >
+          Start for free
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .supports-\[container-type\:scroll-state\]\:after\:\[\@container_bk-header_scroll-state\(stuck\:top\)\]\:opacity-100::after {
+    @supports (container-type: scroll-state) {
+      @container bk-header scroll-state(stuck: top) {
+        opacity: 1;
+      }
+    }
+  }
+  .supports-\[container-type\:scroll-state\]\:after\:\[\@container_bk-header_scroll-state\(stuck\:top\)\]\:delay-0::after {
+    @supports (container-type: scroll-state) {
+      @container bk-header scroll-state(stuck: top) {
+        transition-delay: 0s;
+      }
+    }
+  }
+</style>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('[data-component-name="desktop-main-navigation"]');
+  const hamburger = document.getElementById('bk-nav-hamburger') as HTMLInputElement | null;
+  const hamburgerLabel = nav?.querySelector<HTMLElement>('[data-component-name="navigation-toggle"]');
+
+  if (nav) {
+    // Keyboard Enter/Space support for checkbox-backed <label role="button"> controls
+    nav.querySelectorAll<HTMLLabelElement>('label[role="button"]').forEach((label) => {
+      label.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          label.click();
+        }
+      });
+    });
+
+    if (hamburger && hamburgerLabel) {
+      hamburger.addEventListener('change', () => {
+        hamburgerLabel.setAttribute('aria-expanded', String(hamburger.checked));
+      });
+    }
+
+    // Close mobile drawer + submenus on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      nav.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((cb) => {
+        cb.checked = false;
+      });
+      hamburgerLabel?.setAttribute('aria-expanded', 'false');
+      if (
+        nav.contains(document.activeElement) &&
+        (document.activeElement instanceof HTMLElement || document.activeElement instanceof SVGElement)
+      ) {
+        document.activeElement.blur();
+      }
+    });
+
+    // Play submenu preview videos only when user hovers/focuses the parent menu item
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      nav.querySelectorAll<HTMLElement>('.level1-item').forEach((item) => {
+        const videos = item.querySelectorAll<HTMLVideoElement>('video[data-nav-video]');
+        if (!videos.length) return;
+
+        const playAll = () => videos.forEach((v) => v.play().catch(() => {}));
+        const pauseAll = () => videos.forEach((v) => v.pause());
+
+        item.addEventListener('mouseenter', playAll);
+        item.addEventListener('focusin', playAll);
+        item.addEventListener('mouseleave', pauseAll);
+        item.addEventListener('focusout', (e) => {
+          if (!item.contains(e.relatedTarget as Node | null)) pauseAll();
+        });
+      });
+    }
+  }
+</script>

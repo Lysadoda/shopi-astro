@@ -1,0 +1,51 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import type { Locale, RouteKey } from '../data/routes';
+import { getRoutePath } from '../data/routes';
+
+interface Props {
+  routeKey: RouteKey;
+  locale: Locale;
+  title?: string;
+}
+
+const { routeKey, locale, title } = Astro.props;
+
+const formattedName = routeKey
+  .split('-')
+  .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+  .join(' ');
+
+const pageTitle = title ?? `${formattedName} — Shopify`;
+const homeHref = getRoutePath('home', locale);
+const altLocale: Locale = locale === 'en' ? 'pl' : 'en';
+const altHref = getRoutePath(routeKey, altLocale);
+---
+
+<BaseLayout title={pageTitle} locale={locale} routeKey={routeKey}>
+  <section class="min-h-[65vh] bg-section-dark-bg text-section-dark-text pt-hero-top flex items-center">
+    <div class="container py-20 flex flex-col items-start gap-y-6">
+      <p class="font-mono text-xs uppercase tracking-[0.08em] text-avocado">
+        {locale.toUpperCase()} / {routeKey}
+      </p>
+      <h1 class="text-t1 text-white text-balance">{formattedName}</h1>
+      <p class="text-body-base text-gray-c max-w-[55ch]">
+        Placeholder subpage route ({Astro.url.pathname}). Ready for dedicated content implementation.
+      </p>
+      <div class="flex flex-wrap gap-4 pt-2">
+        <a
+          href={homeHref}
+          class="inline-block px-button-px py-button-py rounded-button border-2 border-button-dark-primary-border bg-button-dark-primary-bg text-button-dark-primary-text font-button-weight hover:bg-button-dark-primary-bg-hover"
+        >
+          Back to Homepage
+        </a>
+        <a
+          href={altHref}
+          class="inline-block px-button-px py-button-py rounded-button border-2 border-button-dark-secondary-border bg-button-dark-secondary-bg text-button-dark-secondary-text font-button-weight hover:border-button-dark-secondary-border-hover"
+        >
+          View in {altLocale === 'pl' ? 'Polish (/pl)' : 'English (/)'}
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

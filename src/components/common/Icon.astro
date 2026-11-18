@@ -1,0 +1,12 @@
+---
+interface Props {
+  name: string;
+  class?: string;
+}
+
+const { name, class: className = 'w-5 h-5 shrink-0' } = Astro.props;
+---
+
+<svg aria-hidden="true" class:list={['pointer-events-none', className]}>
+  <use href={`#${name}`}></use>
+</svg>

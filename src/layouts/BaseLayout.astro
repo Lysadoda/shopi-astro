@@ -1,0 +1,64 @@
+---
+import '../styles/global.css';
+import Head from '../components/layout/Head.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import SvgSprite from '../components/common/SvgSprite.astro';
+import type { Locale, RouteKey } from '../data/routes';
+import { normalizeLocale } from '../data/routes';
+
+interface Props {
+  title: string;
+  description?: string;
+  locale?: Locale;
+  routeKey?: RouteKey;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  locale = normalizeLocale(Astro.currentLocale),
+  routeKey = 'home',
+  noindex = false,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={locale} dir="ltr">
+  <head>
+    <Head
+      title={title}
+      description={description}
+      locale={locale}
+      routeKey={routeKey}
+      noindex={noindex}
+    >
+      <slot name="head" />
+    </Head>
+  </head>
+  <body class="overscroll-y-none">
+    <div class="absolute top-2 left-2 z-[100] pointer-events-none">
+      <a
+        href="#main"
+        class="inline-block self-center overflow-hidden max-w-full px-button-px py-button-py ring-inset rounded-button text-button-size font-button-font font-button-weight tracking-button-tracking focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-state-focus focus-visible:outline border-2 text-button-dark-primary-text bg-button-dark-primary-bg border-button-dark-primary-border transition-transform duration-300 translate-y-[-200%] motion-reduce:transition-none focus:translate-y-0 focus:pointer-events-auto"
+      >
+        Skip to Content
+      </a>
+    </div>
+
+    <div class="relative">
+      <slot name="header">
+        <Header locale={locale} />
+      </slot>
+
+      <main role="main" id="main" tabindex="-1" class="focus-visible:outline-none overflow-y-hidden">
+        <slot />
+      </main>
+
+      <Footer locale={locale} routeKey={routeKey} />
+    </div>
+
+    <SvgSprite />
+  </body>
+</html>

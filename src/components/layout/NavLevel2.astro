@@ -1,0 +1,251 @@
+---
+import Icon from '../common/Icon.astro';
+import type { Locale } from '../../data/routes';
+import { getWhyShopifyMenu, getProductsMenu } from '../../data/navigation';
+
+interface Props {
+  variant: 'why-shopify' | 'products';
+  locale: Locale;
+}
+
+const { variant, locale } = Astro.props;
+const whyMenu = variant === 'why-shopify' ? getWhyShopifyMenu(locale) : null;
+const productsMenu = variant === 'products' ? getProductsMenu(locale) : null;
+const inputId = whyMenu ? whyMenu.id : productsMenu!.id;
+---
+
+<div
+  class="level2-wrapper absolute top-0 start-0 w-full overflow-hidden pointer-events-none max-lg:h-full lg:top-global-header lg:[.level1-item:hover_&]:pointer-events-auto lg:max-h-[calc(90vh-72px)] lg:no-scrollbar lg:overflow-y-auto max-lg:top-global-header max-lg:z-10 max-sm:h-[calc(100vh-var(--spacing-global-header)-116px)] sm:max-lg:h-[calc(100vh-var(--spacing-global-header)-76px)]"
+  data-component-name="global-nav-level2"
+>
+  <input type="checkbox" id={inputId} class="peer hidden" aria-hidden="true" />
+
+  {
+    whyMenu && (
+      <div class="gap-y-[68px] text-sm opacity-0 pt-[76px] px-margin max-sm:flex max-sm:flex-col sm:gap-x-10 sm:pt-[104px] md:relative max-lg:transition-opacity max-lg:duration-[300ms] max-lg:overflow-y-auto max-lg:h-full max-lg:peer-checked:opacity-100 max-lg:peer-checked:pointer-events-auto max-lg:will-change-[opacity] lg:pt-10 lg:opacity-100 lg:-translate-y-[calc(100%+1px)] lg:transition-transform lg:duration-[300ms] lg:ease-ease-out-cubic lg:will-change-transform lg:delay-[150ms] lg:[.level1-item:hover_&]:translate-y-0 lg:[.level1-item:focus-within_&]:translate-y-0 lg:[.level1-item:hover_&]:delay-200 lg:[.level1-item:focus-within_&]:delay-200 xl:px-auto-xl level2-media-container flex max-lg:flex-col max-lg:gap-y-10 max-lg:pb-20 lg:items-start lg:overflow-hidden text-white bg-[#02090a]">
+        <ul class="[grid-area:items] lg:opacity-0 lg:-translate-y-6 lg:delay-[50ms,0ms] lg:transition-[opacity,translate] lg:duration-300 lg:ease-ease-out-cubic lg:will-change-[opacity,translate] lg:[.level1-item:hover_&]:opacity-100 lg:[.level1-item:focus-within_&]:opacity-100 lg:[.level1-item:hover_&]:translate-y-0 lg:[.level1-item:focus-within_&]:translate-y-0 lg:[.level1-item:hover_&]:delay-[250ms,300ms] lg:[.level1-item:focus-within_&]:delay-[250ms,300ms] max-md:flex max-md:flex-col max-md:gap-y-1.5 md:grid grid-cols-3 grid-rows-[1fr] md:gap-x-4 lg:gap-x-6 lg:mb-10">
+          {whyMenu.featured.map((item, index) => (
+            <li class="max-md:relative">
+              {index === 0 && (
+                <label
+                  for={whyMenu.id}
+                  tabindex="0"
+                  role="button"
+                  class="flex items-center cursor-pointer z-20 absolute -top-8 max-md:-translate-y-full sm:-top-10 md:top-10 start-0 md:start-margin lg:hidden before:absolute before:-inset-5"
+                >
+                  <Icon name="icon-chevron" class="w-5 h-5 shrink-0 ltr:rotate-90 rtl:-rotate-90" />
+                  Back
+                </label>
+              )}
+              <a
+                class="level3-link max-sm:pe-4 max-md:grid max-md:grid-cols-[min-content_1fr] max-md:grid-rows-[min-content] max-md:gap-x-3 max-md:py-6 max-md:ps-4 max-md:rounded-2xl sm:max-md:pe-12 max-md:relative max-md:overflow-clip max-md:bg-[#051517] max-md:border max-md:border-[#142024] max-md:before:absolute max-md:before:pointer-events-none max-md:before:w-[327px] max-md:before:h-[85px] max-md:before:rounded-full max-md:before:bg-linear-[91deg] max-md:before:from-[#113439] max-md:before:from-[2.27%] max-md:before:to-[#0F2931] max-md:before:to-[98.62%] max-md:before:opacity-[.8] max-md:before:blur-[40px] max-md:before:left-1/2 max-md:before:-translate-x-1/2 max-md:before:bottom-[-20px]"
+                href={item.href}
+              >
+                <picture class="flex items-center justify-center aspect-[1.049] mb-2 overflow-clip max-md:hidden rounded-2xl lg:rounded-xl lg:max-h-[321px] lg:hidden lg:transition-[display] lg:transition-discrete lg:duration-[450ms] lg:[.level1-item:hover_&]:flex lg:[.level1-item:focus-within_&]:flex">
+                  <img
+                    class="w-full h-full object-cover lg:hover:scale-125 lg:transition-transform lg:duration-500"
+                    alt={item.title}
+                    decoding="async"
+                    loading="lazy"
+                    src={item.image}
+                    srcset={item.image2x}
+                  />
+                </picture>
+                <Icon name={item.icon} class="row-start-[span_2] w-7 h-7 shrink-0 md:hidden" />
+                <p class="flex items-center mb-0.5 text-base max-md:self-end max-md:z-20">
+                  {item.title}
+                  <Icon
+                    name="icon-arrow"
+                    class="w-3.5 h-3.5 shrink-0 opacity-0 rtl:-scale-x-100 lg:[.level3-link:hover_&]:opacity-100 lg:[.level3-link:hover_&]:translate-x-1/2 rtl:lg:[.level3-link:hover_&]:-translate-x-1/2 lg:transition-[opacity,translate] lg:duration-300 lg:will-change-[opacity,translate] max-sm:hidden max-md:absolute max-md:w-6 max-md:h-6 max-md:opacity-100 max-md:top-1/2 max-md:-translate-y-1/2 max-md:end-4"
+                  />
+                </p>
+                <p class="text-sm text-pretty leading-[18px] text-[#a1a1aa] max-md:z-20">
+                  {item.description}
+                </p>
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div class="relative [grid-area:aside] before:absolute before:-top-10 before:start-0 before:bottom-0 before:z-0 before:pointer-events-none max-sm:mt-2 sm:before:w-[calc(100%+var(--margin,var(--spacing-margin)))] xl:before:w-[50vw] max-lg:before:content-none lg:pb-10 lg:ps-10 lg:before:-bottom-5 before:bg-[#051517] after:bg-[#121C1E]">
+          <p class="text-xs text-pretty uppercase tracking-[.72px] leading-[1.2] text-[#36F4A4] relative mb-6 lg:opacity-0 lg:-translate-y-6 lg:delay-[50ms,0ms] lg:transition-[opacity,translate] lg:duration-300 lg:ease-ease-out-cubic lg:will-change-[opacity,translate] lg:[.level1-item:hover_&]:opacity-100 lg:[.level1-item:focus-within_&]:opacity-100 lg:[.level1-item:hover_&]:translate-y-0 lg:[.level1-item:focus-within_&]:translate-y-0 lg:[.level1-item:hover_&]:delay-[350ms,400ms] lg:[.level1-item:focus-within_&]:delay-[350ms,400ms] sm:max-lg:w-1/2 sm:w-64">
+            {whyMenu.asideHeading}
+          </p>
+          <ul class="relative flex lg:opacity-0 lg:-translate-y-6 lg:delay-[50ms,0ms] lg:transition-[opacity,translate] lg:duration-300 lg:ease-ease-out-cubic lg:will-change-[opacity,translate] lg:[.level1-item:hover_&]:opacity-100 lg:[.level1-item:focus-within_&]:opacity-100 lg:[.level1-item:hover_&]:translate-y-0 lg:[.level1-item:focus-within_&]:translate-y-0 lg:[.level1-item:hover_&]:delay-[350ms,400ms] lg:[.level1-item:focus-within_&]:delay-[350ms,400ms] max-md:gap-x-2 max-lg:w-full max-lg:gap-x-4 lg:gap-y-6 lg:flex-col">
+            {whyMenu.asideItems.map((item) => (
+              <li class="max-lg:w-1/2">
+                <a
+                  href={item.href}
+                  class="level3-link gap-y-1 max-sm:flex max-sm:flex-col max-sm:min-h-[176px] sm:max-lg:grid sm:max-lg:grid-cols-[1.5fr_1fr] sm:max-lg:grid-rows-[auto] sm:max-lg:gap-x-3 sm:max-lg:min-h-[129px] max-lg:rounded-2xl max-lg:h-full max-lg:p-6 lg:flex lg:flex-col lg:w-[190px] max-lg:relative max-lg:overflow-clip max-lg:bg-[#0e0e10] max-lg:border max-lg:border-[#19272A] max-sm:before:w-[213px] max-sm:before:h-[115px] max-sm:before:start-0 max-sm:before:top-0 max-sm:before:-translate-y-1/2 sm:max-lg:before:-start-1/4 sm:max-lg:before:top-1/4 sm:max-lg:before:w-[289px] sm:max-lg:before:h-[231px] max-lg:before:absolute max-lg:before:pointer-events-none max-lg:before:bg-linear-[91deg] max-lg:before:from-[rgba(17,52,57,0.50)] max-lg:before:from-[2.27%] max-lg:before:to-[rgba(15,41,49,0.50)] max-lg:before:to-[98.62%] max-lg:before:blur-[100px] max-sm:ltr:after:-translate-x-1/4 max-sm:rtl:after:translate-x-1/4 max-sm:after:start-0 max-sm:after:bottom-0 max-sm:after:translate-y-1/2 sm:max-lg:after:top-1/2 sm:max-lg:after:-translate-y-1/2 max-lg:after:absolute max-lg:after:pointer-events-none max-lg:after:w-[174px] max-lg:after:h-[193px] max-lg:after:bg-radial-[156.58%_114.72%_at_50%_100%] max-lg:[li:first-child_&]:after:from-[rgba(9,78,255,0.30)] max-lg:after:from-[0%] max-lg:[li:last-child_&]:after:from-[rgba(115,55,232,0.43)] max-lg:after:to-[rgba(0,0,0,0.00)] max-lg:after:to-[100%] max-lg:after:blur-[50px] max-lg:after:end-0"
+                >
+                  <video
+                    muted
+                    loop
+                    playsinline
+                    preload="none"
+                    poster={item.poster}
+                    data-nav-video
+                    class="rounded-lg pointer-coarse:pointer-events-none max-sm:w-full lg:hidden lg:transition-[display] lg:transition-discrete lg:duration-[450ms] lg:[.level1-item:hover_&]:block lg:[.level1-item:focus-within_&]:block max-lg:pointer-events-none max-lg:hidden lg:mb-1 lg:h-[87px] lg:aspect-[2.17] bg-[#102620]"
+                  >
+                    <source src={item.webm} type="video/webm; codecs=av01.0.08M.08" />
+                    <source src={item.mp4} type="video/mp4" />
+                  </video>
+                  <p class="flex items-center mb-0.5 max-lg:relative max-lg:z-10 text-pretty sm:max-lg:self-end">
+                    {item.title}
+                    <Icon
+                      name="icon-arrow"
+                      class="w-3.5 h-3.5 shrink-0 opacity-0 rtl:-scale-x-100 lg:[.level3-link:hover_&]:opacity-100 lg:[.level3-link:hover_&]:translate-x-1/2 rtl:lg:[.level3-link:hover_&]:-translate-x-1/2 lg:transition-[opacity,translate] lg:duration-300 lg:will-change-[opacity,translate]"
+                    />
+                  </p>
+                  <p class="text-sm text-pretty leading-[18px] text-[#a1a1aa] max-lg:relative max-lg:z-10 max-sm:mb-3 sm:max-lg:row-start-2">
+                    {item.description}
+                  </p>
+                  <img
+                    class={item.mobileImageClass}
+                    src={item.mobileImage}
+                    srcset={item.mobileImage2x}
+                    alt={item.title}
+                    loading="lazy"
+                  />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    )
+  }
+
+  {
+    productsMenu && (
+      <div class="gap-y-[68px] text-sm opacity-0 pt-[76px] px-margin max-sm:flex max-sm:flex-col sm:gap-x-10 sm:pt-[104px] md:relative max-lg:transition-opacity max-lg:duration-[300ms] max-lg:overflow-y-auto max-lg:h-full max-lg:peer-checked:opacity-100 max-lg:peer-checked:pointer-events-auto max-lg:will-change-[opacity] lg:pt-10 lg:opacity-100 lg:-translate-y-[calc(100%+1px)] lg:transition-transform lg:duration-[300ms] lg:ease-ease-out-cubic lg:will-change-transform lg:delay-[150ms] lg:[.level1-item:hover_&]:translate-y-0 lg:[.level1-item:focus-within_&]:translate-y-0 lg:[.level1-item:hover_&]:delay-200 lg:[.level1-item:focus-within_&]:delay-200 xl:px-auto-xl sm:[--bk-l2-rows:2] sm:grid sm:items-start sm:grid-cols-[1fr_1fr] sm:grid-rows-[repeat(var(--bk-l2-rows),min-content)] sm:[grid-template-areas:'items_aside'_'belt_aside'] max-md:pb-10 md:gap-y-8 md:[--bk-l2-rows:1] md:grid-cols-[2fr_1fr] md:[grid-template-areas:'items_aside'_'belt_belt'] md:max-lg:overflow-x-hidden lg:[--bk-l2-rows:2] lg:grid-cols-[3fr_1fr] text-white bg-[#02090a]">
+        <ul class="[grid-area:items] lg:opacity-0 lg:-translate-y-6 lg:delay-[50ms,0ms] lg:transition-[opacity,translate] lg:duration-300 lg:ease-ease-out-cubic lg:will-change-[opacity,translate] lg:[.level1-item:hover_&]:opacity-100 lg:[.level1-item:focus-within_&]:opacity-100 lg:[.level1-item:hover_&]:translate-y-0 lg:[.level1-item:focus-within_&]:translate-y-0 lg:[.level1-item:hover_&]:delay-[250ms,300ms] lg:[.level1-item:focus-within_&]:delay-[250ms,300ms] flex flex-col gap-y-[68px] w-full md:max-h-[686px] md:flex-wrap md:gap-x-10 md:gap-y-10 lg:max-h-[546px] [@media(max-height:771px)_and_(min-width:1200px)]:max-h-[417px] [@media(max-height:771px)_and_(min-width:1200px)]:gap-y-8">
+          {productsMenu.groups.map((group, index) => (
+            <li
+              class:list={[
+                'max-md:relative max-md:before:w-full max-md:before:h-px max-md:before:absolute max-md:before:-bottom-[25px] max-sm:before:start-0 md:w-[calc((100%-40px)/2)] lg:w-[calc((100%-80px)/3)] max-md:before:bg-[#121C1E]',
+                group.orderClass,
+              ]}
+            >
+              {index === 0 && (
+                <label
+                  for={productsMenu.id}
+                  tabindex="0"
+                  role="button"
+                  class="flex items-center cursor-pointer z-20 absolute -top-8 max-md:-translate-y-full sm:-top-10 md:top-10 start-0 md:start-margin lg:hidden before:absolute before:-inset-5"
+                >
+                  <Icon name="icon-chevron" class="w-5 h-5 shrink-0 ltr:rotate-90 rtl:-rotate-90" />
+                  Back
+                </label>
+              )}
+              <p class="text-xs text-pretty uppercase tracking-[.72px] leading-[1.2] mb-3.5 text-[#36F4A4]">
+                {group.heading}
+              </p>
+              <ul class="level3-container">
+                {group.items.map((item) => (
+                  <li class="lg:transition-opacity lg:duration-300 lg:will-change-[opacity] lg:[.level3-container:hover>&]:opacity-50 lg:[.level3-container:hover>&]:hover:opacity-100">
+                    <a
+                      href={item.href}
+                      rel={item.external ? 'noopener noreferrer' : undefined}
+                      class="level3-link flex items-center sm:items-start gap-x-4 py-2.5 will-change-[opacity] max-sm:text-base [@media(max-height:771px)_and_(min-width:1200px)]:py-1.5"
+                    >
+                      <Icon name={item.icon} class="w-5 h-5 shrink-0" />
+                      <span class="flex items-center">
+                        {item.label}
+                        <Icon
+                          name="icon-arrow"
+                          class="w-3.5 h-3.5 shrink-0 opacity-0 rtl:-scale-x-100 lg:[.level3-link:hover_&]:opacity-100 lg:[.level3-link:hover_&]:translate-x-1/2 rtl:lg:[.level3-link:hover_&]:-translate-x-1/2 lg:transition-[opacity,translate] lg:duration-300 lg:will-change-[opacity,translate]"
+                        />
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+
+        <ul class="[grid-area:belt] gap-y-8 max-md:flex max-md:flex-col md:relative md:pt-6 md:pb-12 md:grid md:gap-x-10 md:grid-cols-3 md:max-lg:grid-rows-[min-content] md:max-lg:gap-y-6 md:max-lg:before:absolute md:max-lg:before:w-[200vw] md:max-lg:before:h-px md:max-lg:before:z-10 md:max-lg:before:top-0 md:max-lg:before:left-1/2 md:max-lg:before:-translate-x-1/2 lg:[--belt-calc:calc((100%-416px)/3)] lg:grid-cols-[var(--belt-calc)_var(--belt-calc)_var(--belt-calc)_296px] lg:sticky lg:py-6 lg:z-20 lg:before:absolute lg:before:w-[200vw] lg:before:h-10 lg:before:top-0 lg:before:left-1/2 lg:before:-translate-x-1/2 lg:before:-translate-y-full lg:before:pointer-events-none lg:before:z-10 lg:after:absolute lg:after:w-[200vw] lg:after:h-full lg:after:top-0 lg:after:left-1/2 lg:after:-translate-x-1/2 lg:after:pointer-events-none lg:after:ring-1 lg:after:ring-inset [@media(width>=1420px)]:[--belt-calc:calc((75%-110px)/3)] [@media(width>=1420px)]:grid-cols-[var(--belt-calc)_var(--belt-calc)_var(--belt-calc)_calc(25%-10px)] md:max-lg:before:bg-[#121C1E] lg:after:ring-[#121C1E] lg:after:bg-[#02090A] lg:bottom-0 lg:before:bg-[linear-gradient(0deg,#02090A_0px,transparent_40px)]">
+          <li class="text-xs text-pretty uppercase tracking-[.72px] leading-[1.2] text-[#36F4A4] lg:opacity-0 lg:delay-[50ms,0ms] lg:transition-[opacity,translate] lg:duration-300 lg:ease-ease-out-cubic lg:will-change-[opacity,translate] lg:[.level1-item:hover_&]:opacity-100 lg:[.level1-item:focus-within_&]:opacity-100 lg:[.level1-item:hover_&]:translate-y-0 lg:[.level1-item:focus-within_&]:translate-y-0 lg:[.level1-item:hover_&]:delay-[300ms,350ms] lg:[.level1-item:focus-within_&]:delay-[300ms,350ms] lg:-translate-y-0 lg:z-10 mb-0 max-lg:w-full md:max-lg:col-span-3 lg:leading-[1.8]">
+            {productsMenu.beltHeading}
+          </li>
+          {productsMenu.beltItems.map((belt) => (
+            <li class="lg:opacity-0 lg:delay-[50ms,0ms] lg:transition-[opacity,translate] lg:duration-300 lg:ease-ease-out-cubic lg:will-change-[opacity,translate] lg:[.level1-item:hover_&]:opacity-100 lg:[.level1-item:focus-within_&]:opacity-100 lg:[.level1-item:hover_&]:translate-y-0 lg:[.level1-item:focus-within_&]:translate-y-0 lg:[.level1-item:hover_&]:delay-[300ms,350ms] lg:[.level1-item:focus-within_&]:delay-[300ms,350ms] lg:-translate-y-0 lg:z-10">
+              <a href={belt.href} rel="noopener noreferrer" class="level3-link">
+                <p class="flex items-center">
+                  {belt.label}
+                  <Icon
+                    name="icon-arrow"
+                    class="w-3.5 h-3.5 shrink-0 opacity-0 rtl:-scale-x-100 lg:[.level3-link:hover_&]:opacity-100 lg:[.level3-link:hover_&]:translate-x-1/2 rtl:lg:[.level3-link:hover_&]:-translate-x-1/2 lg:transition-[opacity,translate] lg:duration-300 lg:will-change-[opacity,translate]"
+                  />
+                </p>
+                <p class="text-sm text-pretty leading-[18px] text-[#a1a1aa]">{belt.description}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div class="relative [grid-area:aside] before:absolute before:-top-10 before:start-0 before:bottom-0 before:z-0 before:pointer-events-none max-sm:mt-2 sm:before:w-[calc(100%+var(--margin,var(--spacing-margin)))] xl:before:w-[50vw] px-4 max-sm:pb-10 max-sm:before:rounded-lg max-sm:before:bg-none max-sm:before:w-full sm:ps-10 sm:pe-0 sm:self-stretch sm:before:-top-[104px] sm:before:-bottom-10 sm:after:absolute sm:after:-top-10 sm:after:start-0 sm:after:bottom-0 sm:after:w-px sm:after:bg-no-repeat sm:after:z-10 sm:after:will-change-[opacity] md:before:-bottom-[32px] md:after:-bottom-[32px] before:bg-[#051517] after:bg-[#121C1E]">
+          <p class="text-xs text-pretty uppercase tracking-[.72px] leading-[1.2] text-[#36F4A4] relative mb-6 lg:opacity-0 lg:-translate-y-6 lg:delay-[50ms,0ms] lg:transition-[opacity,translate] lg:duration-300 lg:ease-ease-out-cubic lg:will-change-[opacity,translate] lg:[.level1-item:hover_&]:opacity-100 lg:[.level1-item:focus-within_&]:opacity-100 lg:[.level1-item:hover_&]:translate-y-0 lg:[.level1-item:focus-within_&]:translate-y-0 lg:[.level1-item:hover_&]:delay-[350ms,400ms] lg:[.level1-item:focus-within_&]:delay-[350ms,400ms] sm:w-64">
+            {productsMenu.asideHeading}
+          </p>
+          <ul class="relative flex lg:opacity-0 lg:-translate-y-6 lg:delay-[50ms,0ms] lg:transition-[opacity,translate] lg:duration-300 lg:ease-ease-out-cubic lg:will-change-[opacity,translate] lg:[.level1-item:hover_&]:opacity-100 lg:[.level1-item:focus-within_&]:opacity-100 lg:[.level1-item:hover_&]:translate-y-0 lg:[.level1-item:focus-within_&]:translate-y-0 lg:[.level1-item:hover_&]:delay-[350ms,400ms] lg:[.level1-item:focus-within_&]:delay-[350ms,400ms] gap-y-10 flex-col sm:w-64">
+            <li>
+              <a href={productsMenu.editionsCard.href} class="level3-link">
+                <video
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                  poster={productsMenu.editionsCard.poster}
+                  data-nav-video
+                  class="rounded-lg pointer-coarse:pointer-events-none max-sm:w-full lg:hidden lg:transition-[display] lg:transition-discrete lg:duration-[450ms] lg:[.level1-item:hover_&]:block lg:[.level1-item:focus-within_&]:block mb-3 aspect-[1.706] sm:h-[150px] bg-[#102620]"
+                >
+                  <source
+                    src={productsMenu.editionsCard.webm}
+                    type="video/webm; codecs=av01.0.08M.08"
+                  />
+                  <source src={productsMenu.editionsCard.mp4} type="video/mp4" />
+                </video>
+                <p class="flex items-center mb-0.5">
+                  {productsMenu.editionsCard.title}
+                  <Icon
+                    name="icon-arrow"
+                    class="w-3.5 h-3.5 shrink-0 opacity-0 rtl:-scale-x-100 lg:[.level3-link:hover_&]:opacity-100 lg:[.level3-link:hover_&]:translate-x-1/2 rtl:lg:[.level3-link:hover_&]:-translate-x-1/2 lg:transition-[opacity,translate] lg:duration-300 lg:will-change-[opacity,translate]"
+                  />
+                </p>
+                <p class="text-sm text-pretty leading-[18px] text-[#a1a1aa]">
+                  {productsMenu.editionsCard.description}
+                </p>
+              </a>
+            </li>
+            <li>
+              <p class="text-xs text-pretty uppercase tracking-[.72px] leading-[1.2] text-[#36F4A4] relative mb-6 lg:opacity-0 lg:-translate-y-6 lg:delay-[50ms,0ms] lg:transition-[opacity,translate] lg:duration-300 lg:ease-ease-out-cubic lg:will-change-[opacity,translate] lg:[.level1-item:hover_&]:opacity-100 lg:[.level1-item:focus-within_&]:opacity-100 lg:[.level1-item:hover_&]:translate-y-0 lg:[.level1-item:focus-within_&]:translate-y-0 lg:[.level1-item:hover_&]:delay-[350ms,400ms] lg:[.level1-item:focus-within_&]:delay-[350ms,400ms] sm:w-64">
+                {productsMenu.updatesHeading}
+              </p>
+              <ul class="level3-container flex flex-col">
+                {productsMenu.updates.map((upd, idx) => (
+                  <li
+                    class:list={[
+                      'lg:[.level3-container:hover>&]:opacity-50 lg:[.level3-container:hover>&]:hover:opacity-100 relative py-3 first:pt-0 last:pb-0 before:absolute first:before:top-1.5 before:top-3 before:h-[calc(100%+12px)] before:start-1.5 before:w-px ltr:before:-translate-x-1/2 rtl:before:translate-x-1/2 last:before:hidden lg:opacity-0 lg:-translate-y-6 lg:delay-[50ms,0ms] lg:transition-[opacity,translate] lg:duration-300 lg:ease-ease-out-cubic lg:will-change-[opacity,translate] lg:[.level1-item:hover_&]:opacity-100 lg:[.level1-item:focus-within_&]:opacity-100 lg:[.level1-item:hover_&]:translate-y-0 lg:[.level1-item:focus-within_&]:translate-y-0 lg:[.level2-wrapper:hover_&]:delay-0 before:bg-[#1C2C30]',
+                      idx === 0 && 'lg:[.level1-item:hover_&]:delay-[400ms,450ms] lg:[.level1-item:focus-within_&]:delay-[400ms,450ms]',
+                      idx === 1 && 'lg:[.level1-item:hover_&]:delay-[450ms,500ms] lg:[.level1-item:focus-within_&]:delay-[450ms,500ms]',
+                      idx === 2 && 'lg:[.level1-item:hover_&]:delay-[500ms,550ms] lg:[.level1-item:focus-within_&]:delay-[500ms,550ms]',
+                    ]}
+                  >
+                    <a
+                      href={upd.href}
+                      class="relative flex ps-6 text-pretty before:start-[3px] before:top-1 before:translate-y-1/2 before:absolute before:w-1.5 before:h-1.5 before:rounded-full before:z-20 after:start-0 after:top-1 after:absolute after:w-3 after:h-3 after:rounded-full after:z-10 after:transition-colors after:duration-300 after:delay-0 before:bg-[#f4f4f5] before:ring-black before:ring-2 hover:before:bg-white after:bg-[#1C2C30] hover:after:bg-[#36F4A4]"
+                    >
+                      {upd.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    )
+  }
+</div>

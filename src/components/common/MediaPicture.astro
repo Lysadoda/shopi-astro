@@ -1,0 +1,47 @@
+---
+import { Picture } from 'astro:assets';
+import type { ImageMetadata, ImageOutputFormat, ImageQuality } from 'astro';
+
+interface Props {
+  src: ImageMetadata | string;
+  alt: string;
+  width?: number;
+  height?: number;
+  widths: number[];
+  sizes: string;
+  priority?: boolean;
+  class?: string;
+  pictureClass?: string;
+  formats?: ImageOutputFormat[];
+  quality?: ImageQuality;
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  widths,
+  sizes,
+  priority = false,
+  class: imgClass,
+  pictureClass,
+  formats = ['avif', 'webp'],
+  quality,
+} = Astro.props;
+---
+
+<Picture
+  src={src}
+  alt={alt}
+  width={width}
+  height={height}
+  widths={widths}
+  sizes={sizes}
+  formats={formats}
+  quality={quality}
+  priority={priority}
+  layout="none"
+  class={imgClass}
+  pictureAttributes={pictureClass ? { class: pictureClass } : undefined}
+/>

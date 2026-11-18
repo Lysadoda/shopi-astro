@@ -1,0 +1,304 @@
+---
+import MediaPicture from '../common/MediaPicture.astro';
+import LazyVideo from '../common/LazyVideo.astro';
+import type { Locale } from '../../data/routes';
+
+interface Props {
+  locale: Locale;
+  heroVideo?: {
+    desktopWebm?: string;
+    mobileWebm?: string;
+  };
+}
+
+const { locale, heroVideo } = Astro.props;
+
+const phrases = [
+  'AI all-star',
+  'household name',
+  'solo-preneur',
+  'category creator',
+  'global empire',
+  'store they line up for',
+  'big thing',
+] as const;
+
+const wordDelayClasses = [
+  'delay-[0ms]',
+  'delay-[150ms]',
+  'delay-[300ms]',
+  'delay-[450ms]',
+  'delay-[600ms]',
+] as const;
+
+const signupBase = 'https://admin.shopify.com/signup';
+const signupPage = locale === 'pl' ? 'https://www.shopify.com/pl' : 'https://www.shopify.com/';
+const signupParams = new URLSearchParams({
+  locale,
+  language: locale,
+  signup_page: signupPage,
+  'signup_types[]': 'paid_trial_experience',
+});
+const signupHref = `${signupBase}?${signupParams.toString()}`;
+
+const emailInputId = `hero-email-${locale}`;
+const disclaimerId = `hero-email-disclaimer-${locale}`;
+const posterUrl =
+  'https://cdn.shopify.com/b/shopify-brochure2-assets/7ecd57f2fa3d7b997d29181a62c954ee.png?originalWidth=1920&originalHeight=1080';
+const heroMediaCropClass =
+  'absolute inset-0 size-full object-cover object-center max-[480px]:h-[101.5%] max-[480px]:object-[54.8%_center]';
+---
+
+<section
+  class="grid grid-cols-full pb-0 bg-section-dark-bg text-section-dark-text relative pt-hero-top gap-y-0 after:relative after:z-10 after:inset-x-0 after:bottom-[-1px] after:bg-coal-black after:h-3xl after:mt-auto after:rounded-t-5xl after:box-content after:shadow-hero-ab-card-edge overflow-hidden before:absolute before:h-1/2 before:w-full before:pointer-events-none before:left-0 before:bottom-0 before:z-10 before:bg-linear-to-b before:from-transparent before:from-0% before:to-black/70 before:to-50%"
+  data-section-name="hero"
+  data-component-name="hero"
+  data-mode="dark"
+>
+  <MediaPicture
+    src={posterUrl}
+    alt=""
+    width={1920}
+    height={1080}
+    widths={[480, 828, 1440, 1920]}
+    sizes="100vw"
+    priority
+    pictureClass="contents"
+    class={heroMediaCropClass}
+  />
+
+  {
+    (heroVideo?.desktopWebm || heroVideo?.mobileWebm) && (
+      <LazyVideo
+        webm={heroVideo.desktopWebm}
+        mobileWebm={heroVideo.mobileWebm}
+        fadeInOnReady
+        ariaHidden
+        class={heroMediaCropClass}
+      />
+    )
+  }
+
+  <div
+    class="container pt-4xl pb-xl md:pb-3xl z-20 flex flex-col justify-between gap-y-lg sm:min-h-min sm:justify-end sm:pt-[165px] lg:pt-[225px] max-sm:!max-w-[calc(100vw-(var(--margin)*2))] overflow-hidden"
+  >
+    <div>
+      <h1 class="richtext text-dsp tracking-[-0.02em]">
+        <span class="block">Be the next</span>
+        <span class="relative block min-h-32 sm:min-h-0 mb-lg" data-hero-rotator>
+          {/* Spacer reserves height for longest wrapping phrase without CLS */}
+          <span
+            aria-hidden="true"
+            class="block pt-2 opacity-0 select-none pointer-events-none"
+          >
+            store they line up for
+          </span>
+
+          {
+            phrases.map((phrase, pIndex) => {
+              const words = phrase.split(' ');
+              const isInitial = pIndex === 0;
+              return (
+                <span
+                  data-hero-phrase
+                  data-active={isInitial ? 'true' : 'false'}
+                  aria-hidden={isInitial ? undefined : 'true'}
+                  class="absolute inset-x-0 top-0 pt-2 flex flex-wrap items-start justify-start gap-0"
+                >
+                  {words.map((word, wIndex) => (
+                    <span class="inline-block overflow-hidden pb-2 -mt-2">
+                      <span
+                        data-hero-word
+                        class:list={[
+                          'inline-block m-0 p-0 transition-opacity-transform duration-[0.45s] ease-heading-transition-ease hyphens-auto',
+                          wordDelayClasses[wIndex] ?? 'delay-[600ms]',
+                          isInitial ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0',
+                        ]}
+                      >
+                        {word}
+                        {wIndex < words.length - 1 ? '\u00A0' : ''}
+                      </span>
+                    </span>
+                  ))}
+                </span>
+              );
+            })
+          }
+        </span>
+      </h1>
+
+      <p class="richtext text-t6 w-full sm:w-1/2 lg:w-1/3 text-balance tracking-[-0.02em]">
+        Dream big and build fast on Shopify. The world’s best commerce platform.
+      </p>
+    </div>
+
+    <div class="flex flex-col">
+      <div class="flex flex-col sm:flex-row sm:items-start gap-y-sm flex-wrap sm:justify-start gap-x-sm">
+        <div
+          class="flex flex-col sm:flex-row sm:items-start md:items-center flex-wrap sm:min-h-0 min-h-35 gap-0 sm:flex-none"
+        >
+          <div class="w-full sm:w-auto">
+            <div id={disclaimerId} class="text-xs text-white/70 mb-sm text-left sm:hidden">
+              You agree to receive marketing emails.
+            </div>
+
+            <div data-component-name="email-form" class="flex justify-center">
+              <form
+                action={signupBase}
+                class="sm:hidden flex w-full flex-col justify-center"
+                method="post"
+              >
+                <input type="hidden" name="locale" value={locale} />
+                <input type="hidden" name="language" value={locale} />
+                <input type="hidden" name="signup_page" value={signupPage} />
+                <input type="hidden" name="signup_types[]" value="paid_trial_experience" />
+
+                <div class="group [&_input.peer:focus~label]:text-white/70">
+                  <div data-component-name="text-input" class="flex flex-col" data-mode="dark">
+                    <div
+                      class="relative box-border flex justify-between items-start w-full duration-300 ease-out peer placeholder:text-transparent ring-1 ring-inset focus-within:outline-0 text-input-dark-text default:ring-input-dark-border hover:ring-input-dark-hover-border focus-within:ring-input-dark-active-border rounded-lg ring-white/50 font-sans focus-within:!ring-white/50 [&_input]:autofill:![-webkit-text-fill-color:white] [&_input]:autofill:transition-custom-[background-color_9999s_ease-in-out_0s] backdrop-blur bg-white/15"
+                    >
+                      <input
+                        required
+                        placeholder=" "
+                        autocomplete="email"
+                        type="email"
+                        aria-describedby={disclaimerId}
+                        class="w-full pb-2 pt-6 peer placeholder:text-transparent bg-transparent focus-visible:outline-none px-4"
+                        id={emailInputId}
+                        name="email"
+                      />
+                      <label
+                        class="absolute z-10 text-base pointer-events-none duration-300 ease-out origin-top-left rtl:origin-top-right peer-placeholder-shown:scale-100 peer-placeholder-shown:top-8 peer-placeholder-shown:-translate-y-4 -translate-y-full peer-focus:-translate-y-full scale-75 peer-focus:scale-75 top-8 text-input-dark-label-text peer-focus:text-input-dark-label-text start-4 peer-placeholder-shown:text-input-dark-text"
+                        for={emailInputId}
+                      >
+                        Enter your email address
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pt-2">
+                  <button
+                    type="submit"
+                    class="inline-block self-center overflow-hidden max-w-full px-button-px py-button-py ring-inset rounded-button text-button-size font-button-font font-button-weight tracking-button-tracking transition-all duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-state-focus focus-visible:outline border-2 text-button-dark-primary-text bg-button-dark-primary-bg border-button-dark-primary-border hover:text-button-dark-primary-text-hover hover:bg-button-dark-primary-bg-hover active:bg-button-dark-primary-bg-active w-full h-14"
+                    data-component-name="start-free-trial"
+                    data-mode="dark"
+                  >
+                    Start for free
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <a
+              href={signupHref}
+              rel="noopener noreferrer"
+              class="self-center overflow-hidden max-w-full px-button-px py-button-py ring-inset rounded-button font-button-font font-button-weight tracking-button-tracking transition-all duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-state-focus focus-visible:outline md:px-button-lg-px md:py-button-lg-py text-button-lg-size border-2 text-button-dark-primary-text bg-button-dark-primary-bg border-button-dark-primary-border hover:text-button-dark-primary-text-hover hover:bg-button-dark-primary-bg-hover active:bg-button-dark-primary-bg-active w-full text-center sm:w-auto sm:text-left hidden sm:block"
+              data-component-name="button"
+              data-mode="dark"
+            >
+              Start for free
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  let cleanupHeroRotator: (() => void) | null = null;
+
+  const initHeroRotator = () => {
+    cleanupHeroRotator?.();
+    cleanupHeroRotator = null;
+
+    const rotator = document.querySelector<HTMLElement>('[data-hero-rotator]');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!rotator || reducedMotion) return;
+
+    const phraseEls = Array.from(rotator.querySelectorAll<HTMLElement>('[data-hero-phrase]'));
+    if (phraseEls.length <= 1) return;
+
+    let current = 0;
+    let intervalId: number | undefined;
+    let isPausedByFocus = false;
+
+    const applyWordClasses = (el: HTMLElement, state: 'enter' | 'active' | 'exit') => {
+      const words = el.querySelectorAll<HTMLElement>('[data-hero-word]');
+      el.dataset.active = state === 'active' ? 'true' : 'false';
+
+      if (state === 'active') {
+        el.removeAttribute('aria-hidden');
+      } else {
+        el.setAttribute('aria-hidden', 'true');
+      }
+
+      words.forEach((w) => {
+        w.classList.remove('translate-y-0', 'translate-y-full', '-translate-y-full', 'opacity-100', 'opacity-0');
+        if (state === 'active') {
+          w.classList.add('translate-y-0', 'opacity-100');
+        } else if (state === 'exit') {
+          w.classList.add('-translate-y-full', 'opacity-0');
+        } else {
+          w.classList.add('translate-y-full', 'opacity-0');
+        }
+      });
+    };
+
+const snapToEnter = (el: HTMLElement) => {
+  const words = el.querySelectorAll<HTMLElement>('[data-hero-word]');
+  words.forEach((w) => w.classList.remove('transition-opacity-transform'));
+  applyWordClasses(el, 'enter');
+  void el.offsetWidth;
+  words.forEach((w) => w.classList.add('transition-opacity-transform'));
+};
+
+    const cycle = () => {
+      if (document.hidden || isPausedByFocus) return;
+      const prev = current;
+      current = (current + 1) % phraseEls.length;
+      const nextEl = phraseEls[current];
+
+      snapToEnter(nextEl);
+      applyWordClasses(phraseEls[prev], 'exit');
+      applyWordClasses(nextEl, 'active');
+    };
+
+    const onFocusIn = () => {
+      isPausedByFocus = true;
+    };
+    const onFocusOut = (e: FocusEvent) => {
+      if (!rotator.contains(e.relatedTarget as Node | null)) isPausedByFocus = false;
+    };
+
+    rotator.addEventListener('focusin', onFocusIn);
+    rotator.addEventListener('focusout', onFocusOut);
+
+    const start = () => {
+      if (intervalId !== undefined) return;
+      intervalId = window.setInterval(cycle, 3200);
+    };
+
+    if (document.readyState === 'complete') {
+      start();
+    } else {
+      window.addEventListener('load', start, { once: true });
+    }
+
+    cleanupHeroRotator = () => {
+      window.removeEventListener('load', start);
+      rotator.removeEventListener('focusin', onFocusIn);
+      rotator.removeEventListener('focusout', onFocusOut);
+      if (intervalId !== undefined) window.clearInterval(intervalId);
+    };
+  };
+
+  initHeroRotator();
+  document.addEventListener('astro:page-load', initHeroRotator);
+  document.addEventListener('astro:before-swap', () => {
+    cleanupHeroRotator?.();
+    cleanupHeroRotator = null;
+  });
+</script>

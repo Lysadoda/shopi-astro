@@ -1,0 +1,70 @@
+---
+import { Font } from 'astro:assets';
+import type { Locale, RouteKey } from '../../data/routes';
+import { getRoutePath } from '../../data/routes';
+
+interface Props {
+  title: string;
+  description?: string;
+  locale: Locale;
+  routeKey?: RouteKey;
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = 'Try Shopify free. Build or grow your business fast with AI. Get more than ecommerce software with tools to manage every part of your business.',
+  locale,
+  routeKey = 'home',
+  ogImage = 'https://cdn.shopify.com/b/shopify-brochure2-assets/d617483c5e5cdd01ae8b4f2571c76f34.png?originalWidth=2400&originalHeight=1260',
+  noindex = false,
+} = Astro.props;
+
+const baseOrigin = Astro.site ?? Astro.url;
+const canonicalUrl = !noindex ? new URL(Astro.url.pathname, baseOrigin).toString() : undefined;
+const enUrl = !noindex ? new URL(getRoutePath(routeKey, 'en'), baseOrigin).toString() : undefined;
+const plUrl = !noindex ? new URL(getRoutePath(routeKey, 'pl'), baseOrigin).toString() : undefined;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex" />}
+
+<link rel="preconnect" href="https://cdn.shopify.com" />
+<link rel="preconnect" href="https://cdn.shopify.com" crossorigin="anonymous" />
+
+<Font cssVariable="--font-inter" preload />
+
+{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+{enUrl && <link rel="alternate" hreflang="x-default" href={enUrl} />}
+{enUrl && <link rel="alternate" hreflang="en" href={enUrl} />}
+{plUrl && <link rel="alternate" hreflang="pl" href={plUrl} />}
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Shopify" />
+<meta property="og:locale" content={locale === 'pl' ? 'pl_PL' : 'en_US'} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImage} />
+{canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@Shopify" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<link
+  rel="icon"
+  href="https://cdn.shopify.com/b/shopify-brochure2-assets/61cc781fe73f11e9d4bd160d27cc627b.png"
+  type="image/png"
+/>
+<link
+  rel="apple-touch-icon"
+  href="https://cdn.shopify.com/b/shopify-brochure2-assets/c97c60ca19c64a8b5378d9f9e971f7bd.png"
+/>
+
+<slot />
