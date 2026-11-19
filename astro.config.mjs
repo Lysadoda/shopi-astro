@@ -1,36 +1,68 @@
 // @ts-check
-import { defineConfig, fontProviders, svgoOptimizer } from 'astro/config';
-
+import { defineConfig, envField, fontProviders, svgoOptimizer } from 'astro/config';
+import process from 'node:process';
+import { loadEnv } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 
-import svelte from '@astrojs/svelte';
+const env = loadEnv(process.env.NODE_ENV ?? 'development', process.cwd(), '');
+const SITE_URL = env.SITE_URL || 'https://www.shopify.com';
+const CDN_BASE_URL = env.CDN_BASE_URL || 'https://cdn.shopify.com';
 
-// https://astro.build/config
+const cdnUrl = new URL(CDN_BASE_URL);
+const cdnOrigin = cdnUrl.origin;
+const cdnProtocol = cdnUrl.protocol === 'http:' ? 'http' : 'https';
+
 export default defineConfig({
+  site: SITE_URL,
   vite: {
     plugins: [tailwindcss()],
   },
-
+  env: {
+    schema: {
+      SITE_URL: envField.string({
+        context: 'server',
+        access: 'public',
+        url: true,
+        default: 'https://www.shopify.com',
+      }),
+      CDN_BASE_URL: envField.string({
+        context: 'server',
+        access: 'public',
+        url: true,
+        default: 'https://cdn.shopify.com',
+      }),
+      SIGNUP_BASE_URL: envField.string({
+        context: 'server',
+        access: 'public',
+        url: true,
+        default: 'https://admin.shopify.com/signup',
+      }),
+      SIGNUP_PAGE_ORIGIN: envField.string({
+        context: 'server',
+        access: 'public',
+        url: true,
+        default: 'https://www.shopify.com',
+      }),
+    },
+  },
   security: {
     csp: {
       directives: [
         "default-src 'self'",
-        "img-src 'self' data: https://cdn.shopify.com",
-        "media-src 'self' https://cdn.shopify.com",
+        `img-src 'self' data: ${cdnOrigin}`,
+        `media-src 'self' ${cdnOrigin}`,
         "font-src 'self' data:",
         "connect-src 'self'",
       ],
     },
   },
-
   i18n: {
-    locales: ["en", "pl"],
-    defaultLocale: "en",
+    locales: ['en', 'pl'],
+    defaultLocale: 'en',
     routing: {
-      prefixDefaultLocale: false
-    }
+      prefixDefaultLocale: false,
+    },
   },
-
   fonts: [
     {
       name: 'Inter',
@@ -48,26 +80,17 @@ export default defineConfig({
             style: 'normal',
             src: ['./src/assets/fonts/inter-latin-ext-wght-normal.woff2'],
           },
-          // Add only if you use italic text:
-          // {
-          //   weight: '100 900',
-          //   style: 'italic',
-          //   src: ['./src/assets/fonts/inter-latin-ext-wght-italic.woff2'],
-          // },
         ],
       },
     },
   ],
-
   image: {
-    remotePatterns: [{ protocol: 'https', hostname: 'cdn.shopify.com' }],
+    remotePatterns: [{ protocol: cdnProtocol, hostname: cdnUrl.hostname }],
   },
-
   prefetch: {
     prefetchAll: true,
     defaultStrategy: 'viewport',
   },
-
   experimental: {
     svgOptimizer: svgoOptimizer(),
     parallelPrerender: true,
@@ -75,6 +98,4 @@ export default defineConfig({
     incrementalBuild: true,
     chromeDevtoolsWorkspace: true,
   },
-
-  integrations: [svelte()]
 });

@@ -1,3 +1,5 @@
+import { SIGNUP_BASE_URL, SIGNUP_PAGE_ORIGIN } from 'astro:env/server';
+
 export type Locale = 'en' | 'pl';
 
 export const ROUTES = {
@@ -57,4 +59,56 @@ export function getRoutePath(key: RouteKey, locale: Locale): string {
 
 export function normalizeLocale(value: string | undefined): Locale {
   return value === 'pl' ? 'pl' : 'en';
+}
+
+export { SIGNUP_BASE_URL };
+export const SIGNUP_TRIAL_TYPE = 'paid_trial_experience';
+
+const PATH_TO_ROUTE_KEY = new Map<string, RouteKey>(
+  (Object.entries(ROUTES) as [RouteKey, Record<Locale, string>][]).flatMap(
+    ([key, locales]) => [
+      [locales.en, key],
+      [locales.pl, key],
+    ],
+  ),
+);
+
+export function normalizePathname(pathname: string): string {
+  if (pathname.length > 1 && pathname.endsWith('/')) {
+    return pathname.slice(0, -1);
+  }
+  return pathname || '/';
+}
+
+export function getRouteKeyFromPath(pathname: string): RouteKey | undefined {
+  return PATH_TO_ROUTE_KEY.get(normalizePathname(pathname));
+}
+
+export function getSignupPageUrl(
+  locale: Locale,
+  routeOrPath: RouteKey | string = 'home',
+): string {
+  let path: string;
+
+  if (Object.hasOwn(ROUTES, routeOrPath)) {
+    path = getRoutePath(routeOrPath as RouteKey, locale);
+  } else {
+    const matchedKey = getRouteKeyFromPath(routeOrPath);
+    path = matchedKey ? getRoutePath(matchedKey, locale) : normalizePathname(routeOrPath);
+  }
+
+  return new URL(path, SIGNUP_PAGE_ORIGIN).toString();
+}
+
+export function getSignupHref(
+  locale: Locale,
+  routeOrPath: RouteKey | string = 'home',
+): string {
+  const params = new URLSearchParams({
+    locale,
+    language: locale,
+    signup_page: getSignupPageUrl(locale, routeOrPath),
+    'signup_types[]': SIGNUP_TRIAL_TYPE,
+  });
+  return `${SIGNUP_BASE_URL}?${params.toString()}`;
 }
