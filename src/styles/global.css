@@ -129,7 +129,7 @@
 @layer theme {
   :root,
   :host {
-    --font-sans: var(--font-inter), Helvetica, Arial, sans-serif;
+    --font-sans: var(--font-inter), var(--font-inter-ext), Helvetica, Arial, sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
       "Liberation Mono", "Courier New", monospace;
     --color-orange-500: oklch(70.5% 0.213 47.604);
@@ -242,7 +242,7 @@
     --color-pistachio-10: #d4f9e0;
     --color-aloe-10: #c1fbd4;
     --color-component-header-level1-border: var(--color-shade-200);
-    --font-base: var(--font-inter), Helvetica, Arial, sans-serif;
+    --font-base: var(--font-inter), var(--font-inter-ext), Helvetica, Arial, sans-serif;
     --text-dsp: 3.5rem;
     --text-dsp--font-weight: 330;
     --text-dsp--line-height: 3.78rem;
@@ -671,7 +671,7 @@
   body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    font-family: var(--font-inter), Helvetica, Arial, sans-serif;
+    font-family: var(--font-inter), var(--font-inter-ext), Helvetica, Arial, sans-serif;
   }
   section {
     margin-top: -1px;
@@ -781,7 +781,7 @@
     );
     --header-height: 4.5rem;
     --spacing-global-header: var(--header-height);
-    --font-base: var(--font-inter), Helvetica, Arial, sans-serif;
+    --font-base: var(--font-inter), var(--font-inter-ext), Helvetica, Arial, sans-serif;
     --text-body-sm: 0.875rem;
     --text-body-sm--font-weight: 420;
     --text-body-sm--line-height: 1.1375rem;
@@ -4286,7 +4286,7 @@
     font-family: var(--font-base);
   }
   .font-button-font {
-    font-family: var(--font-inter), Helvetica, Arial, sans-serif;
+    font-family: var(--font-inter), var(--font-inter-ext), Helvetica, Arial, sans-serif;
   }
   .font-component-button-primary,
   .font-component-button-secondary,

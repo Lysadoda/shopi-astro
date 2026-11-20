@@ -1,7 +1,11 @@
 ---
-import { Font } from 'astro:assets';
-import type { Locale, RouteKey } from '../../data/routes';
-import { getRoutePath } from '../../data/routes';
+import {Font} from 'astro:assets';
+import type {Locale, RouteKey} from '../../data/routes';
+import {
+  getAlternateUrls,
+  getCanonicalUrl,
+  normalizePathname,
+} from '../../data/routes';
 
 interface Props {
   title: string;
@@ -22,9 +26,18 @@ const {
 } = Astro.props;
 
 const baseOrigin = Astro.site ?? Astro.url;
-const canonicalUrl = !noindex ? new URL(Astro.url.pathname, baseOrigin).toString() : undefined;
-const enUrl = !noindex ? new URL(getRoutePath(routeKey, 'en'), baseOrigin).toString() : undefined;
-const plUrl = !noindex ? new URL(getRoutePath(routeKey, 'pl'), baseOrigin).toString() : undefined;
+const canonicalUrl = !noindex
+  ? getCanonicalUrl(
+      routeKey ?? normalizePathname(Astro.url.pathname),
+      locale,
+      baseOrigin,
+    )
+  : undefined;
+const alternates = !noindex
+  ? getAlternateUrls(routeKey, baseOrigin)
+  : undefined;
+const enUrl = alternates?.en;
+const plUrl = alternates?.pl;
 ---
 
 <meta charset="utf-8" />
@@ -37,6 +50,7 @@ const plUrl = !noindex ? new URL(getRoutePath(routeKey, 'pl'), baseOrigin).toStr
 <link rel="preconnect" href="https://cdn.shopify.com" crossorigin="anonymous" />
 
 <Font cssVariable="--font-inter" preload />
+<Font cssVariable="--font-inter-ext" />
 
 {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
 {enUrl && <link rel="alternate" hreflang="x-default" href={enUrl} />}

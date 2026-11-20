@@ -4,8 +4,8 @@ import Head from '../components/layout/Head.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import SvgSprite from '../components/common/SvgSprite.astro';
-import type { Locale, RouteKey } from '../data/routes';
-import { normalizeLocale } from '../data/routes';
+import type {Locale, RouteKey} from '../data/routes';
+import {normalizeLocale} from '../data/routes';
 
 interface Props {
   title: string;
@@ -52,7 +52,12 @@ const {
         <Header locale={locale} />
       </slot>
 
-      <main role="main" id="main" tabindex="-1" class="focus-visible:outline-none overflow-y-hidden">
+      <main
+        role="main"
+        id="main"
+        tabindex="-1"
+        class="focus-visible:outline-none overflow-x-clip"
+      >
         <slot />
       </main>
 

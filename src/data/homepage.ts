@@ -1,7 +1,5 @@
-import { CDN_BASE_URL } from 'astro:env/server';
+import { cdnAsset } from './constants';
 import type { Locale } from './routes';
-
-const cdnAsset = (path: string) => new URL(path, CDN_BASE_URL).toString();
 
 export interface HomePageContent {
   seo: {

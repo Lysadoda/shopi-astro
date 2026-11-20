@@ -1,14 +1,14 @@
 ---
 import Icon from '../common/Icon.astro';
-import type { Locale, RouteKey } from '../../data/routes';
-import { getRoutePath } from '../../data/routes';
+import type {Locale, RouteKey} from '../../data/routes';
+import {getRoutePath} from '../../data/routes';
 
 interface Props {
   locale: Locale;
   routeKey?: RouteKey;
 }
 
-const { locale, routeKey = 'home' } = Astro.props;
+const {locale, routeKey = 'home'} = Astro.props;
 
 const enRoute = getRoutePath(routeKey, 'en');
 const plRoute = getRoutePath(routeKey, 'pl');
@@ -17,17 +17,32 @@ const footerColumns = [
   {
     heading: 'Shopify',
     links: [
-      { label: 'What is Shopify?', href: getRoutePath('blog-what-is-shopify', locale) },
-      { label: 'Shopify Editions', href: getRoutePath('editions', locale) },
-      { label: 'Careers', href: 'https://www.shopify.com/careers', external: true },
-      { label: 'Investors', href: 'https://www.shopify.com/investors', external: true },
-      { label: 'Newsroom', href: 'https://www.shopify.com/news', external: true },
+      {
+        label: 'What is Shopify?',
+        href: getRoutePath('blog-what-is-shopify', locale),
+      },
+      {label: 'Shopify Editions', href: getRoutePath('editions', locale)},
+      {
+        label: 'Careers',
+        href: 'https://www.shopify.com/careers',
+        external: true,
+      },
+      {
+        label: 'Investors',
+        href: 'https://www.shopify.com/investors',
+        external: true,
+      },
+      {label: 'Newsroom', href: 'https://www.shopify.com/news', external: true},
     ],
   },
   {
     heading: 'Ecosystem',
     links: [
-      { label: 'Developer Docs', href: 'https://shopify.dev/docs', external: true },
+      {
+        label: 'Developer Docs',
+        href: 'https://shopify.dev/docs',
+        external: true,
+      },
       {
         label: 'Theme Store',
         href: `https://themes.shopify.com/?locale=${locale}`,
@@ -38,17 +53,21 @@ const footerColumns = [
         href: `https://apps.shopify.com/?locale=${locale}`,
         external: true,
       },
-      { label: 'Partners', href: getRoutePath('partners', locale) },
-      { label: 'Affiliates', href: getRoutePath('affiliates', locale) },
+      {label: 'Partners', href: getRoutePath('partners', locale)},
+      {label: 'Affiliates', href: getRoutePath('affiliates', locale)},
     ],
   },
   {
     heading: 'Resources',
     links: [
-      { label: 'Blog', href: getRoutePath('blog', locale) },
-      { label: 'Compare Shopify', href: getRoutePath('compare', locale) },
-      { label: 'Free Tools', href: getRoutePath('tools', locale) },
-      { label: 'Changelog', href: 'https://changelog.shopify.com', external: true },
+      {label: 'Blog', href: getRoutePath('blog', locale)},
+      {label: 'Compare Shopify', href: getRoutePath('compare', locale)},
+      {label: 'Free Tools', href: getRoutePath('tools', locale)},
+      {
+        label: 'Changelog',
+        href: 'https://changelog.shopify.com',
+        external: true,
+      },
     ],
   },
   {
@@ -59,18 +78,29 @@ const footerColumns = [
         href: `https://help.shopify.com/${locale}`,
         external: true,
       },
-      { label: 'Community Forum', href: 'https://community.shopify.com/', external: true },
-      { label: 'Hire a Partner', href: getRoutePath('partners-directory', locale) },
-      { label: 'Service Status', href: 'https://shopifystatus.com', external: true },
+      {
+        label: 'Community Forum',
+        href: 'https://community.shopify.com/',
+        external: true,
+      },
+      {
+        label: 'Hire a Partner',
+        href: getRoutePath('partners-directory', locale),
+      },
+      {
+        label: 'Service Status',
+        href: 'https://shopifystatus.com',
+        external: true,
+      },
     ],
   },
 ] as const;
 
 const legalLinks = [
-  { label: 'Terms of Service', href: getRoutePath('legal-terms', locale) },
-  { label: 'Legal', href: getRoutePath('legal', locale) },
-  { label: 'Privacy Policy', href: getRoutePath('legal-privacy', locale) },
-  { label: 'Sitemap', href: getRoutePath('sitemap', locale) },
+  {label: 'Terms of Service', href: getRoutePath('legal-terms', locale)},
+  {label: 'Legal', href: getRoutePath('legal', locale)},
+  {label: 'Privacy Policy', href: getRoutePath('legal-privacy', locale)},
+  {label: 'Sitemap', href: getRoutePath('sitemap', locale)},
 ] as const;
 
 const socialLinks = [
@@ -79,7 +109,7 @@ const socialLinks = [
     icon: 'icon-facebook',
     href: 'https://www.facebook.com/shopify',
   },
-  { name: 'Twitter', icon: 'icon-twitter', href: 'https://twitter.com/shopify' },
+  {name: 'Twitter', icon: 'icon-twitter', href: 'https://twitter.com/shopify'},
   {
     name: 'YouTube',
     icon: 'icon-youtube',
@@ -90,7 +120,11 @@ const socialLinks = [
     icon: 'icon-instagram',
     href: 'https://www.instagram.com/shopify/',
   },
-  { name: 'TikTok', icon: 'icon-tiktok', href: 'https://www.tiktok.com/@shopify' },
+  {
+    name: 'TikTok',
+    icon: 'icon-tiktok',
+    href: 'https://www.tiktok.com/@shopify',
+  },
   {
     name: 'LinkedIn',
     icon: 'icon-linkedin',
@@ -114,34 +148,34 @@ const regionTriggerText = locale === 'pl' ? 'Poland | Polski' : 'USA | English';
     <Icon name="logo-shopify-bag" class="w-full h-full" />
   </a>
 
-  <ul
-    class="gap-y-14 max-sm:flex max-sm:flex-col max-sm:pb-2 sm:col-span-2 sm:grid sm:grid-cols-2 sm:gap-x-gutter md:col-span-4 md:grid-cols-4"
-  >
-    {
-      footerColumns.map((col) => (
-        <li>
-          <h3 class="text-xl leading-[20px] font-medium mb-6 text-white">{col.heading}</h3>
-          <ul class="flex flex-col gap-y-4">
-            {col.links.map((item) => (
-              <li>
-                <a
-                  class="transition-colors duration-200 hover:text-white"
-                  href={item.href}
-                  rel={'external' in item && item.external ? 'noopener noreferrer' : undefined}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </li>
-      ))
-    }
+  <ul class="gap-y-14 max-sm:flex max-sm:flex-col max-sm:pb-2 sm:col-span-2 sm:grid sm:grid-cols-2 sm:gap-x-gutter md:col-span-4 md:grid-cols-4">
+    {footerColumns.map(col => (
+      <li>
+        <h3 class="text-xl leading-[20px] font-medium mb-6 text-white">
+          {col.heading}
+        </h3>
+        <ul class="flex flex-col gap-y-4">
+          {col.links.map(item => (
+            <li>
+              <a
+                class="transition-colors duration-200 hover:text-white"
+                href={item.href}
+                rel={
+                  'external' in item && item.external
+                    ? 'noopener noreferrer'
+                    : undefined
+                }
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </li>
+    ))}
   </ul>
 
-  <div
-    class="flex w-full gap-y-7 border-t pt-10 max-sm:flex-col sm:col-span-3 sm:flex-wrap sm:gap-x-10 sm:items-center md:col-span-5 border-[#121C1E]"
-  >
+  <div class="flex w-full gap-y-7 border-t pt-10 max-sm:flex-col sm:col-span-3 sm:flex-wrap sm:gap-x-10 sm:items-center md:col-span-5 border-[#121C1E]">
     <div
       data-component-name="regions"
       class="relative group"
@@ -172,7 +206,8 @@ const regionTriggerText = locale === 'pl' ? 'Poland | Polski' : 'USA | English';
               r="8.5"
               stroke="currentColor"
               stroke-linecap="round"
-              stroke-linejoin="round"></circle>
+              stroke-linejoin="round"
+            ></circle>
             <ellipse
               cx="10"
               cy="10"
@@ -180,7 +215,8 @@ const regionTriggerText = locale === 'pl' ? 'Poland | Polski' : 'USA | English';
               stroke-linecap="round"
               stroke-linejoin="round"
               rx="3"
-              ry="8.5"></ellipse>
+              ry="8.5"
+            ></ellipse>
             <ellipse
               cx="10"
               cy="10"
@@ -188,7 +224,8 @@ const regionTriggerText = locale === 'pl' ? 'Poland | Polski' : 'USA | English';
               stroke-linecap="round"
               stroke-linejoin="round"
               rx="8.5"
-              ry="3"></ellipse>
+              ry="3"
+            ></ellipse>
           </svg>
           <span class="truncate">{regionTriggerText}</span>
           <svg
@@ -203,7 +240,8 @@ const regionTriggerText = locale === 'pl' ? 'Poland | Polski' : 'USA | English';
               stroke="currentColor"
               stroke-linecap="round"
               stroke-linejoin="round"
-              d="m4 13 6-6 6 6"></path>
+              d="m4 13 6-6 6 6"
+            ></path>
           </svg>
         </span>
       </button>
@@ -219,7 +257,9 @@ const regionTriggerText = locale === 'pl' ? 'Poland | Polski' : 'USA | English';
       >
         <div class="flex flex-col gap-6">
           <div class="flex items-center justify-between">
-            <h2 class="text-theme-content text-t7">Choose a region &amp; language</h2>
+            <h2 class="text-theme-content text-t7">
+              Choose a region &amp; language
+            </h2>
             <button
               popovertarget="language-selector-popover"
               popovertargetaction="hide"
@@ -239,7 +279,8 @@ const regionTriggerText = locale === 'pl' ? 'Poland | Polski' : 'USA | English';
                 <path
                   stroke="currentColor"
                   stroke-linecap="round"
-                  d="m4.34 4.34 11.32 11.32M15.66 4.34 4.34 15.66"></path>
+                  d="m4.34 4.34 11.32 11.32M15.66 4.34 4.34 15.66"
+                ></path>
               </svg>
             </button>
           </div>
@@ -252,8 +293,12 @@ const regionTriggerText = locale === 'pl' ? 'Poland | Polski' : 'USA | English';
                   id="region-country-select"
                   name="region-country-select"
                 >
-                  <option value="US" selected={locale === 'en'}>USA</option>
-                  <option value="PL" selected={locale === 'pl'}>Poland</option>
+                  <option value="US" selected={locale === 'en'}>
+                    USA
+                  </option>
+                  <option value="PL" selected={locale === 'pl'}>
+                    Poland
+                  </option>
                 </select>
                 <label
                   class="absolute pointer-events-none duration-300 ease-out origin-top-left rtl:origin-top-right -translate-y-full scale-75 top-8 start-4 line-clamp-1"
@@ -273,7 +318,8 @@ const regionTriggerText = locale === 'pl' ? 'Poland | Polski' : 'USA | English';
                     stroke="currentColor"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    d="m4 13 6-6 6 6"></path>
+                    d="m4 13 6-6 6 6"
+                  ></path>
                 </svg>
               </div>
             </div>
@@ -285,8 +331,12 @@ const regionTriggerText = locale === 'pl' ? 'Poland | Polski' : 'USA | English';
                   id="region-language-select"
                   name="region-language-select"
                 >
-                  <option value="en" selected={locale === 'en'}>English</option>
-                  <option value="pl" selected={locale === 'pl'}>Polski</option>
+                  <option value="en" selected={locale === 'en'}>
+                    English
+                  </option>
+                  <option value="pl" selected={locale === 'pl'}>
+                    Polski
+                  </option>
                 </select>
                 <label
                   class="absolute pointer-events-none duration-300 ease-out origin-top-left rtl:origin-top-right -translate-y-full scale-75 top-8 start-4 line-clamp-1"
@@ -306,7 +356,8 @@ const regionTriggerText = locale === 'pl' ? 'Poland | Polski' : 'USA | English';
                     stroke="currentColor"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    d="m4 13 6-6 6 6"></path>
+                    d="m4 13 6-6 6 6"
+                  ></path>
                 </svg>
               </div>
             </div>
@@ -318,11 +369,18 @@ const regionTriggerText = locale === 'pl' ? 'Poland | Polski' : 'USA | English';
             data-component-name="region-selector-confirm"
           >
             <span>Confirm</span>
-            <svg fill="none" viewBox="0 0 20 20" aria-hidden="true" height="24" width="24">
+            <svg
+              fill="none"
+              viewBox="0 0 20 20"
+              aria-hidden="true"
+              height="24"
+              width="24"
+            >
               <path
                 stroke="currentColor"
                 stroke-linecap="round"
-                d="m12.12 4.34 5.59 5.59a.1.1 0 0 1 0 .14l-5.59 5.59M17.78 10H2.22"></path>
+                d="m12.12 4.34 5.59 5.59a.1.1 0 0 1 0 .14l-5.59 5.59M17.78 10H2.22"
+              ></path>
             </svg>
           </a>
         </div>
@@ -330,15 +388,16 @@ const regionTriggerText = locale === 'pl' ? 'Poland | Polski' : 'USA | English';
     </div>
 
     <ul class="flex gap-x-10 max-sm:flex-col max-sm:gap-y-4 max-md:w-full md:me-auto">
-      {
-        legalLinks.map((item) => (
-          <li>
-            <a class="transition-colors duration-200 hover:text-white" href={item.href}>
-              {item.label}
-            </a>
-          </li>
-        ))
-      }
+      {legalLinks.map(item => (
+        <li>
+          <a
+            class="transition-colors duration-200 hover:text-white"
+            href={item.href}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
       <li>
         <a
           class="transition-colors duration-200 hover:text-white"
@@ -361,35 +420,39 @@ const regionTriggerText = locale === 'pl' ? 'Poland | Polski' : 'USA | English';
     </ul>
 
     <ul class="flex flex-wrap gap-4 max-lg:w-full">
-      {
-        socialLinks.map((social) => (
-          <li class="h-8 w-8 hover:opacity-70 transition-opacity duration-200 fill-white text-black">
-            <a
-              href={social.href}
-              rel="me nofollow noopener noreferrer"
-              target="_blank"
-              aria-label={`External source: ${social.name} (Opens in a new window)`}
-            >
-              <Icon name={social.icon} class="w-full h-full" />
-            </a>
-          </li>
-        ))
-      }
+      {socialLinks.map(social => (
+        <li class="h-8 w-8 hover:opacity-70 transition-opacity duration-200 fill-white text-black">
+          <a
+            href={social.href}
+            rel="me nofollow noopener noreferrer"
+            target="_blank"
+            aria-label={`External source: ${social.name} (Opens in a new window)`}
+          >
+            <Icon name={social.icon} class="w-full h-full" />
+          </a>
+        </li>
+      ))}
     </ul>
   </div>
 </footer>
 
 <script>
-  const container = document.querySelector<HTMLElement>('[data-component-name="regions"]');
-  const countrySelect = document.getElementById('region-country-select') as HTMLSelectElement | null;
-  const languageSelect = document.getElementById('region-language-select') as HTMLSelectElement | null;
+  const container = document.querySelector<HTMLElement>(
+    '[data-component-name="regions"]',
+  );
+  const countrySelect = document.getElementById(
+    'region-country-select',
+  ) as HTMLSelectElement | null;
+  const languageSelect = document.getElementById(
+    'region-language-select',
+  ) as HTMLSelectElement | null;
   const confirmLink = container?.querySelector<HTMLAnchorElement>(
     '[data-component-name="region-selector-confirm"]',
   );
 
   if (container && countrySelect && languageSelect && confirmLink) {
     const enRoute = container.dataset.enRoute ?? '/';
-    const plRoute = container.dataset.plRoute ?? '/pl';
+    const plRoute = container.dataset.plRoute ?? '/pl/';
 
     const syncTarget = (source: 'country' | 'language') => {
       if (source === 'country') {

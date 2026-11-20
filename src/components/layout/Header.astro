@@ -1,21 +1,20 @@
 ---
 import Icon from '../common/Icon.astro';
 import NavLevel2 from './NavLevel2.astro';
-import type { Locale } from '../../data/routes';
-import { getRoutePath } from '../../data/routes';
-import { getSimpleTopLinks } from '../../data/navigation';
+import type {Locale} from '../../data/routes';
+import {getRoutePath, getSignupHref} from '../../data/routes';
+import {getSimpleTopLinks} from '../../data/navigation';
 
 interface Props {
   locale: Locale;
 }
 
-const { locale } = Astro.props;
+const {locale} = Astro.props;
 const homeHref = getRoutePath('home', locale);
 const editionsHref = getRoutePath('editions-fall2026', locale);
 const topLinks = getSimpleTopLinks(locale);
 const loginHref = '/login?ui_locales=en';
-const signupHref =
-  'https://admin.shopify.com/signup?locale=en&language=en&signup_page=https%3A%2F%2Fwww.shopify.com%2Fpl&signup_types%5B%5D=paid_trial_experience';
+const signupHref = getSignupHref(locale, Astro.url.pathname);
 ---
 
 <header
@@ -30,7 +29,11 @@ const signupHref =
   >
     <div class="flex shrink-0 items-center z-20 max-lg:me-auto">
       <div class="relative flex items-center">
-        <a href={homeHref} data-component-name="logo-home" class="inline-block shrink-0 relative z-20">
+        <a
+          href={homeHref}
+          data-component-name="logo-home"
+          class="inline-block shrink-0 relative z-20"
+        >
           <img
             src="https://cdn.shopify.com/b/shopify-brochure2-assets/d9340911ca8c679b148dd4a205ad2ffa.svg"
             alt="Shopify"
@@ -43,15 +46,18 @@ const signupHref =
       </div>
     </div>
 
-    <input type="checkbox" id="bk-nav-hamburger" class="peer/l1Mobile hidden" aria-hidden="true" />
+    <input
+      type="checkbox"
+      id="bk-nav-hamburger"
+      class="peer/l1Mobile hidden"
+      aria-hidden="true"
+    />
 
     <ul
       id="bk-nav-level1-items"
       class="flex max-lg:fixed max-lg:top-0 max-lg:start-0 max-lg:w-full max-lg:pointer-events-none max-lg:opacity-0 max-lg:transition-opacity max-lg:duration-300 max-lg:peer-checked/l1Mobile:opacity-100 max-lg:peer-checked/l1Mobile:pointer-events-auto max-lg:will-change-[opacity] max-lg:flex-col max-lg:h-full max-lg:px-margin max-lg:pt-24 max-sm:pb-[136px] sm:max-lg:pb-[76px] max-lg:bg-component-header-bg max-lg:z-10 max-lg:no-scrollbar max-lg:overflow-y-auto group lg:gap-x-7 min-[1300px]:gap-x-8 lg:me-auto"
     >
-      <li
-        class="font-semi-medium whitespace-nowrap max-lg:border-b max-lg:border-component-header-level1-border lg:flex level1-item lg:z-30 lg:hover:z-40 lg:before:absolute lg:before:bottom-0 lg:before:start-0 lg:before:w-full lg:before:h-6 lg:before:pointer-events-none lg:hover:before:pointer-events-auto"
-      >
+      <li class="font-semi-medium whitespace-nowrap max-lg:border-b max-lg:border-component-header-level1-border lg:flex level1-item lg:z-30 lg:hover:z-40 lg:before:absolute lg:before:bottom-0 lg:before:start-0 lg:before:w-full lg:before:h-6 lg:before:pointer-events-none lg:hover:before:pointer-events-auto">
         <label
           for="bk-nav-why-shopify"
           tabindex="0"
@@ -68,9 +74,7 @@ const signupHref =
         <NavLevel2 variant="why-shopify" locale={locale} />
       </li>
 
-      <li
-        class="font-semi-medium whitespace-nowrap max-lg:border-b max-lg:border-component-header-level1-border lg:flex level1-item lg:z-30 lg:hover:z-40 lg:before:absolute lg:before:bottom-0 lg:before:start-0 lg:before:w-full lg:before:h-6 lg:before:pointer-events-none lg:hover:before:pointer-events-auto"
-      >
+      <li class="font-semi-medium whitespace-nowrap max-lg:border-b max-lg:border-component-header-level1-border lg:flex level1-item lg:z-30 lg:hover:z-40 lg:before:absolute lg:before:bottom-0 lg:before:start-0 lg:before:w-full lg:before:h-6 lg:before:pointer-events-none lg:hover:before:pointer-events-auto">
         <label
           for="bk-nav-products"
           tabindex="0"
@@ -87,18 +91,16 @@ const signupHref =
         <NavLevel2 variant="products" locale={locale} />
       </li>
 
-      {
-        topLinks.map((link) => (
-          <li class="font-semi-medium whitespace-nowrap max-lg:border-b max-lg:border-component-header-level1-border lg:flex lg:z-20">
-            <a
-              href={getRoutePath(link.routeKey, locale)}
-              class="flex items-center max-lg:py-4 max-lg:justify-between max-lg:font-[330] max-lg:text-2xl md:max-lg:text-3xl lg:group-hover:opacity-50 lg:group-hover:hover:opacity-100 lg:transition-opacity lg:duration-300"
-            >
-              {link.label}
-            </a>
-          </li>
-        ))
-      }
+      {topLinks.map(link => (
+        <li class="font-semi-medium whitespace-nowrap max-lg:border-b max-lg:border-component-header-level1-border lg:flex lg:z-20">
+          <a
+            href={getRoutePath(link.routeKey, locale)}
+            class="flex items-center max-lg:py-4 max-lg:justify-between max-lg:font-[330] max-lg:text-2xl md:max-lg:text-3xl lg:group-hover:opacity-50 lg:group-hover:hover:opacity-100 lg:transition-opacity lg:duration-300"
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
 
       <li class="font-semi-medium whitespace-nowrap max-lg:border-b max-lg:border-component-header-level1-border lg:flex lg:z-20">
         <a
@@ -116,7 +118,9 @@ const signupHref =
               srcset="https://cdn.shopify.com/b/shopify-brochure2-assets/b92011e8f994db7276899016b2850cb4.png?originalWidth=18&originalHeight=18 1x, https://cdn.shopify.com/b/shopify-brochure2-assets/b92011e8f994db7276899016b2850cb4.png?originalWidth=36&originalHeight=36 2x"
             />
           </picture>
-          <span class="pointer-events-none lg:hidden min-[1300px]:inline-flex">Fall ’26 Edition</span>
+          <span class="pointer-events-none lg:hidden min-[1300px]:inline-flex">
+            Fall ’26 Edition
+          </span>
         </a>
       </li>
     </ul>
@@ -213,20 +217,28 @@ const signupHref =
 </style>
 
 <script>
-  const nav = document.querySelector<HTMLElement>('[data-component-name="desktop-main-navigation"]');
-  const hamburger = document.getElementById('bk-nav-hamburger') as HTMLInputElement | null;
-  const hamburgerLabel = nav?.querySelector<HTMLElement>('[data-component-name="navigation-toggle"]');
+  const nav = document.querySelector<HTMLElement>(
+    '[data-component-name="desktop-main-navigation"]',
+  );
+  const hamburger = document.getElementById(
+    'bk-nav-hamburger',
+  ) as HTMLInputElement | null;
+  const hamburgerLabel = nav?.querySelector<HTMLElement>(
+    '[data-component-name="navigation-toggle"]',
+  );
 
   if (nav) {
     // Keyboard Enter/Space support for checkbox-backed <label role="button"> controls
-    nav.querySelectorAll<HTMLLabelElement>('label[role="button"]').forEach((label) => {
-      label.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          label.click();
-        }
+    nav
+      .querySelectorAll<HTMLLabelElement>('label[role="button"]')
+      .forEach(label => {
+        label.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            label.click();
+          }
+        });
       });
-    });
 
     if (hamburger && hamburgerLabel) {
       hamburger.addEventListener('change', () => {
@@ -235,15 +247,18 @@ const signupHref =
     }
 
     // Close mobile drawer + submenus on Escape
-    document.addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', e => {
       if (e.key !== 'Escape') return;
-      nav.querySelectorAll<HTMLInputElement>('input[type="checkbox"]').forEach((cb) => {
-        cb.checked = false;
-      });
+      nav
+        .querySelectorAll<HTMLInputElement>('input[type="checkbox"]')
+        .forEach(cb => {
+          cb.checked = false;
+        });
       hamburgerLabel?.setAttribute('aria-expanded', 'false');
       if (
         nav.contains(document.activeElement) &&
-        (document.activeElement instanceof HTMLElement || document.activeElement instanceof SVGElement)
+        (document.activeElement instanceof HTMLElement ||
+          document.activeElement instanceof SVGElement)
       ) {
         document.activeElement.blur();
       }
@@ -251,17 +266,19 @@ const signupHref =
 
     // Play submenu preview videos only when user hovers/focuses the parent menu item
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      nav.querySelectorAll<HTMLElement>('.level1-item').forEach((item) => {
-        const videos = item.querySelectorAll<HTMLVideoElement>('video[data-nav-video]');
+      nav.querySelectorAll<HTMLElement>('.level1-item').forEach(item => {
+        const videos = item.querySelectorAll<HTMLVideoElement>(
+          'video[data-nav-video]',
+        );
         if (!videos.length) return;
 
-        const playAll = () => videos.forEach((v) => v.play().catch(() => {}));
-        const pauseAll = () => videos.forEach((v) => v.pause());
+        const playAll = () => videos.forEach(v => v.play().catch(() => {}));
+        const pauseAll = () => videos.forEach(v => v.pause());
 
         item.addEventListener('mouseenter', playAll);
         item.addEventListener('focusin', playAll);
         item.addEventListener('mouseleave', pauseAll);
-        item.addEventListener('focusout', (e) => {
+        item.addEventListener('focusout', e => {
           if (!item.contains(e.relatedTarget as Node | null)) pauseAll();
         });
       });

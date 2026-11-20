@@ -1,21 +1,16 @@
 ---
 import PlaceholderPage from '../layouts/PlaceholderPage.astro';
-import { ROUTES, type RouteKey } from '../data/routes';
+import {getPlaceholderStaticPaths, type RouteKey} from '../data/routes';
 
 export function getStaticPaths() {
-  return (Object.keys(ROUTES) as RouteKey[])
-    .filter((key) => key !== 'home')
-    .map((routeKey) => ({
-      params: { slug: ROUTES[routeKey].en.replace(/^\//, '') },
-      props: { routeKey },
-    }));
+  return getPlaceholderStaticPaths('en');
 }
 
 interface Props {
   routeKey: RouteKey;
 }
 
-const { routeKey } = Astro.props;
+const {routeKey} = Astro.props;
 ---
 
 <PlaceholderPage routeKey={routeKey} locale="en" />

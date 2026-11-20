@@ -4,9 +4,9 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   site: 'https://www.shopify.com',
-  trailingSlash: 'never',
+  trailingSlash: 'always',
   build: {
-    format: 'file',
+    format: 'directory',
   },
   vite: {
     plugins: [tailwindcss()],
@@ -23,16 +23,64 @@ export default defineConfig({
       name: 'Shopify-Inter',
       cssVariable: '--font-inter',
       provider: fontProviders.local(),
+      display: 'optional',
+      unicodeRange: [
+        'U+0000-00FF',
+        'U+0131',
+        'U+0152-0153',
+        'U+02BB-02BC',
+        'U+02C6',
+        'U+02DA',
+        'U+02DC',
+        'U+0304',
+        'U+0308',
+        'U+0329',
+        'U+2000-206F',
+        'U+20AC',
+        'U+2122',
+        'U+2191',
+        'U+2193',
+        'U+2212',
+        'U+2215',
+        'U+FEFF',
+        'U+FFFD',
+      ],
       options: {
         variants: [
           {
             weight: '100 900',
             style: 'normal',
-            display: 'optional',
-            unicodeRange: [
-              'U+0-19F, U+1B1-24F, U+250-2FF, U+300-36F, U+2000-218F, U+2190-22FF, U+2400-27BF, U+FB00-FB4F, U+FEFF, U+FFFD',
-            ],
             src: ['./src/assets/fonts/inter-latin-wght-normal.woff2'],
+          },
+        ],
+      },
+    },
+    {
+      name: 'Shopify-Inter',
+      cssVariable: '--font-inter-ext',
+      provider: fontProviders.local(),
+      display: 'swap',
+      optimizedFallbacks: false,
+      unicodeRange: [
+        'U+0100-02AF',
+        'U+0304',
+        'U+0308',
+        'U+0329',
+        'U+1E00-1E9F',
+        'U+1EF2-1EFF',
+        'U+2020',
+        'U+20A0-20AB',
+        'U+20AD-20C0',
+        'U+2113',
+        'U+2C60-2C7F',
+        'U+A720-A7FF',
+      ],
+      options: {
+        variants: [
+          {
+            weight: '100 900',
+            style: 'normal',
+            src: ['./src/assets/fonts/inter-latin-ext-wght-normal.woff2'],
           },
         ],
       },

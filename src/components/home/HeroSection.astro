@@ -1,7 +1,8 @@
 ---
 import MediaPicture from '../common/MediaPicture.astro';
+import heroPoster from '../../assets/hero-poster.png';
 import LazyVideo from '../common/LazyVideo.astro';
-import { getHomePageContent, type HomePageContent } from '../../data/homepage';
+import {getHomePageContent, type HomePageContent} from '../../data/homepage';
 import {
   SIGNUP_BASE_URL,
   SIGNUP_TRIAL_TYPE,
@@ -15,7 +16,7 @@ interface Props {
   content?: HomePageContent['hero'];
 }
 
-const { locale, content = getHomePageContent(locale).hero } = Astro.props;
+const {locale, content = getHomePageContent(locale).hero} = Astro.props;
 
 const wordDelayClasses = [
   'delay-[0ms]',
@@ -45,36 +46,44 @@ const heroMediaCropClass =
   data-mode="dark"
 >
   <MediaPicture
-    src={content.media.posterUrl}
-    alt={content.media.posterAlt}
-    width={1920}
-    height={1080}
+    src={heroPoster}
+    alt=""
     widths={[480, 828, 1440, 1920]}
     sizes="100vw"
+    fallbackFormat="webp"
     priority
     pictureClass="contents"
-    class={heroMediaCropClass}
+    class="absolute inset-0 size-full object-cover object-center max-[480px]:h-[101.5%] max-[480px]:object-[54.8%_center]"
   />
+  <video
+    data-hero-video
+    data-desktop-webm="/media/hero-d.webm"
+    data-mobile-webm="/media/hero-m.webm"
+    aria-label="Footage of Shopify merchants making sales, managing their business, and celebrating their success."
+    muted
+    loop
+    playsinline
+    preload="none"
+    class="absolute inset-0 size-full object-cover object-center opacity-0 transition-opacity duration-300"
+  ></video>
+  {(content.media.desktopWebm || content.media.mobileWebm) && (
+    <LazyVideo
+      webm={content.media.desktopWebm}
+      mobileWebm={content.media.mobileWebm}
+      fadeInOnReady
+      ariaHidden
+      class={heroMediaCropClass}
+    />
+  )}
 
-  {
-    (content.media.desktopWebm || content.media.mobileWebm) && (
-      <LazyVideo
-        webm={content.media.desktopWebm}
-        mobileWebm={content.media.mobileWebm}
-        fadeInOnReady
-        ariaHidden
-        class={heroMediaCropClass}
-      />
-    )
-  }
-
-  <div
-    class="container pt-4xl pb-xl md:pb-3xl z-20 flex flex-col justify-between gap-y-lg sm:min-h-min sm:justify-end sm:pt-[165px] lg:pt-[225px] max-sm:max-w-[calc(100vw-(var(--margin)*2))]! overflow-hidden"
-  >
+  <div class="container pt-4xl pb-xl md:pb-3xl z-20 flex flex-col justify-between gap-y-lg sm:min-h-min sm:justify-end sm:pt-[165px] lg:pt-[225px] max-sm:max-w-[calc(100vw-(var(--margin)*2))]! overflow-hidden">
     <div>
       <h1 class="richtext text-dsp tracking-[-0.02em]">
         <span class="block">{content.headingPrefix}</span>
-        <span class="relative block min-h-32 sm:min-h-0 mb-lg" data-hero-rotator>
+        <span
+          class="relative block min-h-32 sm:min-h-0 mb-lg"
+          data-hero-rotator
+        >
           <span
             aria-hidden="true"
             class="block pt-2 opacity-0 select-none pointer-events-none"
@@ -82,36 +91,38 @@ const heroMediaCropClass =
             {spacerPhrase}
           </span>
 
-          {
-            content.phrases.map((phrase, pIndex) => {
-              const words = phrase.split(' ');
-              const isInitial = pIndex === 0;
-              return (
-                <span
-                  data-hero-phrase
-                  data-active={isInitial ? 'true' : 'false'}
-                  aria-hidden={isInitial ? undefined : 'true'}
-                  class="absolute inset-x-0 top-0 pt-2 flex flex-wrap items-start justify-start gap-0"
-                >
-                  {words.map((word, wIndex) => (
-                    <span class="inline-block overflow-hidden pb-2 -mt-2">
-                      <span
-                        data-hero-word
-                        class:list={[
-                          'inline-block m-0 p-0 transition-opacity-transform duration-[0.45s] ease-heading-transition-ease hyphens-auto',
-                          wordDelayClasses[Math.min(wIndex, wordDelayClasses.length - 1)],
-                          isInitial ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0',
-                        ]}
-                      >
-                        {word}
-                        {wIndex < words.length - 1 ? '\u00A0' : ''}
-                      </span>
+          {content.phrases.map((phrase, pIndex) => {
+            const words = phrase.split(' ');
+            const isInitial = pIndex === 0;
+            return (
+              <span
+                data-hero-phrase
+                data-active={isInitial ? 'true' : 'false'}
+                aria-hidden={isInitial ? undefined : 'true'}
+                class="absolute inset-x-0 top-0 pt-2 flex flex-wrap items-start justify-start gap-0"
+              >
+                {words.map((word, wIndex) => (
+                  <span class="inline-block overflow-hidden pb-2 -mt-2">
+                    <span
+                      data-hero-word
+                      class:list={[
+                        'inline-block m-0 p-0 transition-opacity-transform duration-[0.45s] ease-heading-transition-ease hyphens-auto',
+                        wordDelayClasses[
+                          Math.min(wIndex, wordDelayClasses.length - 1)
+                        ],
+                        isInitial
+                          ? 'translate-y-0 opacity-100'
+                          : 'translate-y-full opacity-0',
+                      ]}
+                    >
+                      {word}
+                      {wIndex < words.length - 1 ? '\u00A0' : ''}
                     </span>
-                  ))}
-                </span>
-              );
-            })
-          }
+                  </span>
+                ))}
+              </span>
+            );
+          })}
         </span>
       </h1>
 
@@ -122,11 +133,12 @@ const heroMediaCropClass =
 
     <div class="flex flex-col">
       <div class="flex flex-col sm:flex-row sm:items-start gap-y-sm flex-wrap sm:justify-start gap-x-sm">
-        <div
-          class="flex flex-col sm:flex-row sm:items-start md:items-center flex-wrap sm:min-h-0 min-h-35 gap-0 sm:flex-none"
-        >
+        <div class="flex flex-col sm:flex-row sm:items-start md:items-center flex-wrap sm:min-h-0 min-h-35 gap-0 sm:flex-none">
           <div class="w-full sm:w-auto">
-            <div id={disclaimerId} class="text-xs text-white/70 mb-sm text-left sm:hidden">
+            <div
+              id={disclaimerId}
+              class="text-xs text-white/70 mb-sm text-left sm:hidden"
+            >
               {content.marketingDisclaimer}
             </div>
 
@@ -139,13 +151,19 @@ const heroMediaCropClass =
                 <input type="hidden" name="locale" value={locale} />
                 <input type="hidden" name="language" value={locale} />
                 <input type="hidden" name="signup_page" value={signupPage} />
-                <input type="hidden" name="signup_types[]" value={SIGNUP_TRIAL_TYPE} />
+                <input
+                  type="hidden"
+                  name="signup_types[]"
+                  value={SIGNUP_TRIAL_TYPE}
+                />
 
                 <div class="group [&_input.peer:focus~label]:text-white/70">
-                  <div data-component-name="text-input" class="flex flex-col" data-mode="dark">
-                    <div
-                      class="relative box-border flex justify-between items-start w-full duration-300 ease-out peer placeholder:text-transparent ring-1 ring-inset focus-within:outline-0 text-input-dark-text default:ring-input-dark-border hover:ring-input-dark-hover-border focus-within:ring-input-dark-active-border rounded-lg ring-white/50 font-sans focus-within:ring-white/50! [&_input]:autofill:[-webkit-text-fill-color:white]! [&_input]:autofill:transition-custom-[background-color_9999s_ease-in-out_0s] backdrop-blur bg-white/15"
-                    >
+                  <div
+                    data-component-name="text-input"
+                    class="flex flex-col"
+                    data-mode="dark"
+                  >
+                    <div class="relative box-border flex justify-between items-start w-full duration-300 ease-out peer placeholder:text-transparent ring-1 ring-inset focus-within:outline-0 text-input-dark-text default:ring-input-dark-border hover:ring-input-dark-hover-border focus-within:ring-input-dark-active-border rounded-lg ring-white/50 font-sans focus-within:ring-white/50! [&_input]:autofill:[-webkit-text-fill-color:white]! [&_input]:autofill:transition-custom-[background-color_9999s_ease-in-out_0s] backdrop-blur bg-white/15">
                       <input
                         required
                         placeholder=" "
@@ -203,17 +221,24 @@ const heroMediaCropClass =
     cleanupHeroRotator = null;
 
     const rotator = document.querySelector<HTMLElement>('[data-hero-rotator]');
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
     if (!rotator || reducedMotion) return;
 
-    const phraseEls = Array.from(rotator.querySelectorAll<HTMLElement>('[data-hero-phrase]'));
+    const phraseEls = Array.from(
+      rotator.querySelectorAll<HTMLElement>('[data-hero-phrase]'),
+    );
     if (phraseEls.length <= 1) return;
 
     let current = 0;
     let intervalId: number | undefined;
     let isPausedByFocus = false;
 
-    const applyWordClasses = (el: HTMLElement, state: 'enter' | 'active' | 'exit') => {
+    const applyWordClasses = (
+      el: HTMLElement,
+      state: 'enter' | 'active' | 'exit',
+    ) => {
       const words = el.querySelectorAll<HTMLElement>('[data-hero-word]');
       el.dataset.active = state === 'active' ? 'true' : 'false';
 
@@ -223,8 +248,14 @@ const heroMediaCropClass =
         el.setAttribute('aria-hidden', 'true');
       }
 
-      words.forEach((w) => {
-        w.classList.remove('translate-y-0', 'translate-y-full', '-translate-y-full', 'opacity-100', 'opacity-0');
+      words.forEach(w => {
+        w.classList.remove(
+          'translate-y-0',
+          'translate-y-full',
+          '-translate-y-full',
+          'opacity-100',
+          'opacity-0',
+        );
         if (state === 'active') {
           w.classList.add('translate-y-0', 'opacity-100');
         } else if (state === 'exit') {
@@ -237,10 +268,10 @@ const heroMediaCropClass =
 
     const snapToEnter = (el: HTMLElement) => {
       const words = el.querySelectorAll<HTMLElement>('[data-hero-word]');
-      words.forEach((w) => w.classList.remove('transition-opacity-transform'));
+      words.forEach(w => w.classList.remove('transition-opacity-transform'));
       applyWordClasses(el, 'enter');
       void el.offsetWidth;
-      words.forEach((w) => w.classList.add('transition-opacity-transform'));
+      words.forEach(w => w.classList.add('transition-opacity-transform'));
     };
 
     const cycle = () => {
@@ -258,7 +289,8 @@ const heroMediaCropClass =
       isPausedByFocus = true;
     };
     const onFocusOut = (e: FocusEvent) => {
-      if (!rotator.contains(e.relatedTarget as Node | null)) isPausedByFocus = false;
+      if (!rotator.contains(e.relatedTarget as Node | null))
+        isPausedByFocus = false;
     };
 
     rotator.addEventListener('focusin', onFocusIn);
@@ -272,7 +304,7 @@ const heroMediaCropClass =
     if (document.readyState === 'complete') {
       start();
     } else {
-      window.addEventListener('load', start, { once: true });
+      window.addEventListener('load', start, {once: true});
     }
 
     cleanupHeroRotator = () => {
