@@ -1,7 +1,10 @@
 ---
-import MediaPicture from '../common/MediaPicture.astro';
-import heroPoster from '../../assets/hero-poster.png';
-import LazyVideo from '../common/LazyVideo.astro';
+import AmbientVideo from '../media/AmbientVideo.astro';
+import heroDesktopImg from '../../assets/media/home/hero1440.jpg';
+import heroMobileImg from '../../assets/media/home/hero480.jpg';
+// import MediaPicture from '../common/MediaPicture.astro';
+// import heroPoster from '../../assets/hero-poster.png';
+// import LazyVideo from '../common/LazyVideo.astro';
 import {getHomePageContent, type HomePageContent} from '../../data/homepage';
 import {
   SIGNUP_BASE_URL,
@@ -45,36 +48,20 @@ const heroMediaCropClass =
   data-component-name="hero"
   data-mode="dark"
 >
-  <MediaPicture
-    src={heroPoster}
-    alt=""
-    widths={[480, 828, 1440, 1920]}
-    sizes="100vw"
-    fallbackFormat="webp"
-    priority
-    pictureClass="contents"
-    class="absolute inset-0 size-full object-cover object-center max-[480px]:h-[101.5%] max-[480px]:object-[54.8%_center]"
+  <AmbientVideo
+    desktopImage={heroDesktopImg}
+    mobileImage={heroMobileImg}
+    desktopSources={[
+      {src: '/media/home/hero-d.webm', type: 'video/webm'},
+      {src: '/videos/hero-desktop.mp4', type: 'video/mp4'},
+    ]}
+    mobileSources={[
+      {src: '/media/home/hero-m.webm', type: 'video/webm'},
+      {src: '/videos/hero-mobile.mp4', type: 'video/mp4'},
+    ]}
+    loadStrategy="idle"
+    class="absolute inset-0 h-full w-full"
   />
-  <video
-    data-hero-video
-    data-desktop-webm="/media/hero-d.webm"
-    data-mobile-webm="/media/hero-m.webm"
-    aria-label="Footage of Shopify merchants making sales, managing their business, and celebrating their success."
-    muted
-    loop
-    playsinline
-    preload="none"
-    class="absolute inset-0 size-full object-cover object-center opacity-0 transition-opacity duration-300"
-  ></video>
-  {(content.media.desktopWebm || content.media.mobileWebm) && (
-    <LazyVideo
-      webm={content.media.desktopWebm}
-      mobileWebm={content.media.mobileWebm}
-      fadeInOnReady
-      ariaHidden
-      class={heroMediaCropClass}
-    />
-  )}
 
   <div class="container pt-4xl pb-xl md:pb-3xl z-20 flex flex-col justify-between gap-y-lg sm:min-h-min sm:justify-end sm:pt-[165px] lg:pt-[225px] max-sm:max-w-[calc(100vw-(var(--margin)*2))]! overflow-hidden">
     <div>

@@ -1,12 +1,9 @@
 ---
-import { Picture } from 'astro:assets';
-import type { ImageMetadata, ImageOutputFormat, ImageQuality } from 'astro';
+import {Picture} from 'astro:assets';
+import type {ImageMetadata, ImageOutputFormat, ImageQuality} from 'astro';
 
-interface Props {
-  src: ImageMetadata | string;
+interface CommonProps {
   alt: string;
-  width?: number;
-  height?: number;
   widths: number[];
   sizes: string;
   priority?: boolean;
@@ -16,11 +13,31 @@ interface Props {
   quality?: ImageQuality;
 }
 
+type Props =
+  | (CommonProps & {
+      src: ImageMetadata;
+      width?: number;
+      height?: number;
+      inferSize?: never;
+    })
+  | (CommonProps & {
+      src: string;
+      width: number;
+      height: number;
+      inferSize?: false;
+    })
+  | (CommonProps & {
+      src: string;
+      inferSize: true;
+      width?: never;
+      height?: never;
+    });
+
 const {
   src,
-  alt,
   width,
   height,
+  alt,
   widths,
   sizes,
   priority = false,
@@ -29,19 +46,29 @@ const {
   formats = ['avif', 'webp'],
   quality,
 } = Astro.props;
+
+const sharedProps = {
+  alt,
+  widths,
+  sizes,
+  formats,
+  priority,
+  layout: 'none' as const,
+  ...(quality !== undefined ? {quality} : {}),
+  ...(imgClass !== undefined ? {class: imgClass} : {}),
+  ...(pictureClass ? {pictureAttributes: {class: pictureClass}} : {}),
+};
 ---
 
-<Picture
-  src={src}
-  alt={alt}
-  width={width}
-  height={height}
-  widths={widths}
-  sizes={sizes}
-  formats={formats}
-  quality={quality}
-  priority={priority}
-  layout="none"
-  class={imgClass}
-  pictureAttributes={pictureClass ? { class: pictureClass } : undefined}
-/>
+{typeof src !== 'string' ? (
+  <Picture
+    src={src}
+    {...(width !== undefined ? {width} : {})}
+    {...(height !== undefined ? {height} : {})}
+    {...sharedProps}
+  />
+) : width !== undefined && height !== undefined ? (
+  <Picture src={src} width={width} height={height} {...sharedProps} />
+) : (
+  <Picture src={src} inferSize {...sharedProps} />
+)}

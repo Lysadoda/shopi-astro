@@ -1,0 +1,153 @@
+---
+import type {ImageMetadata} from 'astro';
+import {getImage} from 'astro:assets';
+import {
+  normalizeVideoSources,
+  type VideoLoadStrategy,
+  type VideoSource,
+} from '../../lib/media';
+
+interface Props {
+  mobileImage: ImageMetadata | string;
+  desktopImage: ImageMetadata | string;
+  mobileSources: string | VideoSource[];
+  desktopSources: string | VideoSource[];
+  /** Breakpoint switching mobile <-> desktop assets. Defaults to Tailwind `lg`. */
+  desktopMedia?: string;
+  /** Controls when video bytes start downloading. Use `'idle'` for hero LCP optimization. */
+  loadStrategy?: VideoLoadStrategy;
+  /** Marks fallback <picture> as high-priority LCP element. Defaults to `loadStrategy !== 'visible'`. */
+  isLcp?: boolean;
+  pauseOffscreen?: boolean;
+  quality?: number;
+  sizes?: string;
+  alt?: string;
+  class?: string;
+}
+
+const {
+  mobileImage,
+  desktopImage,
+  mobileSources,
+  desktopSources,
+  desktopMedia = '(min-width: 64rem)',
+  loadStrategy = 'idle',
+  isLcp = loadStrategy !== 'visible',
+  pauseOffscreen = true,
+  quality = 72,
+  sizes = '100vw',
+  alt = '',
+  class: className = '',
+} = Astro.props;
+
+const isRemote = (src: ImageMetadata | string) => typeof src === 'string';
+
+const [mobileAvif, mobileWebp, desktopAvif, desktopWebp] = await Promise.all([
+  getImage({
+    src: mobileImage,
+    format: 'avif',
+    widths: [480, 768, 1024],
+    quality,
+    ...(isRemote(mobileImage) ? {inferSize: true} : {}),
+  }),
+  getImage({
+    src: mobileImage,
+    format: 'webp',
+    widths: [480, 768, 1024],
+    quality,
+    ...(isRemote(mobileImage) ? {inferSize: true} : {}),
+  }),
+  getImage({
+    src: desktopImage,
+    format: 'avif',
+    widths: [1024, 1440, 1920],
+    quality,
+    ...(isRemote(desktopImage) ? {inferSize: true} : {}),
+  }),
+  getImage({
+    src: desktopImage,
+    format: 'webp',
+    widths: [1024, 1440, 1920],
+    quality,
+    ...(isRemote(desktopImage) ? {inferSize: true} : {}),
+  }),
+]);
+
+const normalizedMobile = normalizeVideoSources(mobileSources);
+const normalizedDesktop = normalizeVideoSources(desktopSources);
+---
+
+<!-- 
+TODO
+absolute inset-0 size-full object-cover object-center max-[480px]:h-[101.5%] max-[480px]:object-[54.8%_center]
+vs
+{['relative overflow-hidden bg-black', className]} -->
+<div
+  data-video-container
+  class:list={[
+    'absolute inset-0 size-full object-cover object-center max-[480px]:h-[101.5%] max-[480px]:object-[54.8%_center] bg-black',
+    className,
+  ]}
+  aria-hidden={alt === '' ? 'true' : undefined}
+>
+  <picture class="block h-full w-full">
+    <source
+      media={desktopMedia}
+      srcset={desktopAvif.srcSet.attribute}
+      sizes={sizes}
+      width={desktopAvif.attributes.width}
+      height={desktopAvif.attributes.height}
+      type="image/avif"
+    />
+    <source
+      media={desktopMedia}
+      srcset={desktopWebp.srcSet.attribute}
+      sizes={sizes}
+      width={desktopWebp.attributes.width}
+      height={desktopWebp.attributes.height}
+      type="image/webp"
+    />
+    <source
+      srcset={mobileAvif.srcSet.attribute}
+      sizes={sizes}
+      width={mobileAvif.attributes.width}
+      height={mobileAvif.attributes.height}
+      type="image/avif"
+    />
+    <img
+      src={mobileWebp.src}
+      srcset={mobileWebp.srcSet.attribute}
+      sizes={sizes}
+      width={mobileWebp.attributes.width}
+      height={mobileWebp.attributes.height}
+      alt={alt}
+      loading={isLcp ? 'eager' : 'lazy'}
+      decoding={isLcp ? 'sync' : 'async'}
+      fetchpriority={isLcp ? 'high' : 'auto'}
+      class="h-full w-full object-cover"
+    />
+  </picture>
+
+  <video
+    class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-0 transition-opacity duration-180 motion-reduce:hidden"
+    muted
+    loop
+    playsinline
+    preload="none"
+    disablepictureinpicture
+    aria-hidden="true"
+    tabindex="-1"
+    data-smart-video
+    data-ambient="true"
+    data-autoplay="true"
+    data-load-strategy={loadStrategy}
+    data-pause-offscreen={String(pauseOffscreen)}
+    data-desktop-media={desktopMedia}
+    data-mobile-sources={JSON.stringify(normalizedMobile)}
+    data-desktop-sources={JSON.stringify(normalizedDesktop)}
+  ></video>
+</div>
+
+<script>
+  import '../../scripts/video-loader';
+</script>

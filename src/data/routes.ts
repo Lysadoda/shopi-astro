@@ -2,6 +2,8 @@ import { SIGNUP_BASE_URL, SIGNUP_TRIAL_TYPE, SITE_URL } from './constants';
 
 export type Locale = 'en' | 'pl';
 
+export { SIGNUP_BASE_URL, SIGNUP_TRIAL_TYPE };
+
 export const ROUTES = {
   home: { en: '/', pl: '/pl/' },
   start: { en: '/start/', pl: '/pl/start/' },
@@ -53,7 +55,10 @@ export const ROUTES = {
 
 export type RouteKey = keyof typeof ROUTES;
 
-/** Routes implemented as dedicated files in `src/pages/` instead of `[...slug].astro`. */
+/**
+ * Routes implemented as dedicated pages (`src/pages/<route>/index.astro`)
+ * instead of `[...slug].astro`. Add a key here when replacing a placeholder.
+ */
 export const DEDICATED_ROUTES: ReadonlySet<RouteKey> = new Set<RouteKey>(['home']);
 
 const PATH_TO_ROUTE_KEY = new Map<string, RouteKey>(
@@ -62,8 +67,6 @@ const PATH_TO_ROUTE_KEY = new Map<string, RouteKey>(
     [locales.pl, key],
   ]),
 );
-
-export { SIGNUP_BASE_URL, SIGNUP_TRIAL_TYPE };
 
 export function isRouteKey(value: string): value is RouteKey {
   return Object.hasOwn(ROUTES, value);
@@ -76,7 +79,8 @@ export function normalizeLocale(value: string | undefined): Locale {
 /** Normalizes paths to `trailingSlash: 'always'` directory format (`/`, `/pl/`, `/pricing/`). */
 export function normalizePathname(pathname: string): string {
   const withoutQueryOrHash = pathname.split(/[?#]/, 1)[0] ?? '';
-  let clean = withoutQueryOrHash.startsWith('/') ? withoutQueryOrHash : `/${withoutQueryOrHash}`;
+  let clean = (withoutQueryOrHash.startsWith('/') ? withoutQueryOrHash : `/${withoutQueryOrHash}`)
+    .replace(/\/{2,}/g, '/');
 
   if (clean === '/index.html') {
     return '/';
@@ -129,15 +133,16 @@ export function getAlternateUrls(routeKey: RouteKey, origin: string | URL = SITE
 
 export function getStaticSlug(key: RouteKey, locale: Locale): string {
   const fullPath = ROUTES[key][locale];
+
   if (locale === 'pl') {
-    if (!fullPath.startsWith('/pl/') || fullPath === '/pl/') {
-      throw new Error(`Polish subroute "${key}" must be under "/pl/": received "${fullPath}"`);
+    if (!fullPath.startsWith('/pl/') || !fullPath.endsWith('/') || fullPath === '/pl/') {
+      throw new Error(`Polish subroute "${key}" must be "/pl/.../": received "${fullPath}"`);
     }
-    return fullPath.slice('/pl/'.length).replace(/\/$/, '');
+    return fullPath.slice('/pl/'.length, -1);
   }
 
-  if (fullPath === '/' || !fullPath.startsWith('/')) {
-    throw new Error(`English subroute "${key}" must be a non-root path: received "${fullPath}"`);
+  if (fullPath === '/' || !fullPath.startsWith('/') || !fullPath.endsWith('/')) {
+    throw new Error(`English subroute "${key}" must be "/.../": received "${fullPath}"`);
   }
   return fullPath.slice(1, -1);
 }

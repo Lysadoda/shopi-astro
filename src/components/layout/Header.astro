@@ -13,7 +13,7 @@ const {locale} = Astro.props;
 const homeHref = getRoutePath('home', locale);
 const editionsHref = getRoutePath('editions-fall2026', locale);
 const topLinks = getSimpleTopLinks(locale);
-const loginHref = '/login?ui_locales=en';
+const loginHref = '/login/';
 const signupHref = getSignupHref(locale, Astro.url.pathname);
 ---
 

@@ -1,9 +1,11 @@
 ---
 import {Font} from 'astro:assets';
+import {SITE_URL} from '../../data/constants';
 import type {Locale, RouteKey} from '../../data/routes';
 import {
   getAlternateUrls,
   getCanonicalUrl,
+  getRouteKeyFromPath,
   normalizePathname,
 } from '../../data/routes';
 
@@ -16,28 +18,37 @@ interface Props {
   noindex?: boolean;
 }
 
+const DEFAULT_DESCRIPTION =
+  'Try Shopify free. Build or grow your business fast with AI. Get more than ecommerce software with tools to manage every part of your business.';
+
 const {
   title,
-  description = 'Try Shopify free. Build or grow your business fast with AI. Get more than ecommerce software with tools to manage every part of your business.',
+  description = DEFAULT_DESCRIPTION,
   locale,
-  routeKey = 'home',
+  routeKey,
   ogImage = 'https://cdn.shopify.com/b/shopify-brochure2-assets/d617483c5e5cdd01ae8b4f2571c76f34.png?originalWidth=2400&originalHeight=1260',
   noindex = false,
 } = Astro.props;
 
-const baseOrigin = Astro.site ?? Astro.url;
+const baseOrigin = Astro.site ?? SITE_URL;
+const resolvedRouteKey = routeKey ?? getRouteKeyFromPath(Astro.url.pathname);
+
 const canonicalUrl = !noindex
   ? getCanonicalUrl(
-      routeKey ?? normalizePathname(Astro.url.pathname),
+      resolvedRouteKey ?? normalizePathname(Astro.url.pathname),
       locale,
       baseOrigin,
     )
   : undefined;
-const alternates = !noindex
-  ? getAlternateUrls(routeKey, baseOrigin)
-  : undefined;
+
+const alternates =
+  !noindex && resolvedRouteKey
+    ? getAlternateUrls(resolvedRouteKey, baseOrigin)
+    : undefined;
+
 const enUrl = alternates?.en;
 const plUrl = alternates?.pl;
+const resolvedOgImage = new URL(ogImage, baseOrigin).toString();
 ---
 
 <meta charset="utf-8" />
@@ -47,7 +58,6 @@ const plUrl = alternates?.pl;
 {noindex && <meta name="robots" content="noindex" />}
 
 <link rel="preconnect" href="https://cdn.shopify.com" />
-<link rel="preconnect" href="https://cdn.shopify.com" crossorigin="anonymous" />
 
 <Font cssVariable="--font-inter" preload />
 <Font cssVariable="--font-inter-ext" />
@@ -62,14 +72,14 @@ const plUrl = alternates?.pl;
 <meta property="og:locale" content={locale === 'pl' ? 'pl_PL' : 'en_US'} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={ogImage} />
+<meta property="og:image" content={resolvedOgImage} />
 {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
 
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@Shopify" />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={ogImage} />
+<meta name="twitter:image" content={resolvedOgImage} />
 
 <link
   rel="icon"
