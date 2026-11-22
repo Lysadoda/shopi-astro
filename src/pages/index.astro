@@ -1,11 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroSection from '../components/home/HeroSection.astro';
+import TeaserBox from '../components/home/TeaserBox.astro';
 ---
 
 <BaseLayout title="Shopify" locale="en" routeKey="home">
   <HeroSection locale="en" />
   <section class="min-h-[60vh] bg-section-dark-bg text-section-dark-text pt-hero-top flex items-center justify-center">
-    <p class="text-t2">Shopify Home (EN) — Shell Ready</p>
+    <TeaserBox locale="en" />
   </section>
 </BaseLayout>

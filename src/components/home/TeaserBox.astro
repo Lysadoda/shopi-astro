@@ -1,0 +1,151 @@
+---
+import {Picture} from 'astro:assets';
+import type {Locale} from '../../data/routes';
+import {
+  TEASER_BOX_COPY,
+  TEASER_BOX_GROUPS,
+  type TeaserCardVariant,
+} from '../../data/home/teaser-box';
+
+interface Props {
+  locale: Locale;
+}
+
+const {locale} = Astro.props;
+const copy = TEASER_BOX_COPY[locale];
+
+const CARD_IMAGE_CONFIG: Record<
+  TeaserCardVariant,
+  {widths: number[]; sizes: string}
+> = {
+  wide: {
+    widths: [200, 400, 600, 800, 1000],
+    sizes:
+      '(min-width: 1600px) 567px, (min-width: 1200px) 35vw, (min-width: 900px) 471px, (min-width: 640px) 405px, 256px',
+  },
+  narrow: {
+    widths: [200, 400, 454],
+    sizes:
+      '(min-width: 1600px) 246px, (min-width: 1200px) 15vw, (min-width: 900px) 204px, (min-width: 640px) 176px, 111px',
+  },
+};
+---
+
+<section
+  class="grid gap-y-2xl grid-cols-full bg-section-dark-bg text-section-dark-text pt-0 overflow-hidden pb-16 md:pb-20"
+  data-section-name="teaser-box"
+  data-component-name="home-teaser-box-section"
+  data-mode="dark"
+  data-tb-root
+>
+  <div class="container">
+    <div
+      role="tablist"
+      aria-label={copy.tablistAriaLabel}
+      class="bg-clip-text text-t2 leading-none tracking-[-0.02em] bg-ab-control sm:text-balance py-[0.12em] -my-[0.12em]"
+      data-tb-tablist
+    >
+      {TEASER_BOX_GROUPS.map((group, index) => {
+        const isActive = index === 0;
+        return (
+          <>
+            {index > 0 && ' '}
+            <button
+              type="button"
+              id={`tb-tab-${index}`}
+              role="tab"
+              aria-controls={`tb-content-${index}`}
+              aria-selected={isActive ? 'true' : 'false'}
+              tabindex={isActive ? 0 : -1}
+              data-tb-tab={index}
+              class:list={[
+                'inline text-start bg-transparent border-0 p-0 font-inherit tracking-inherit leading-inherit cursor-pointer text-shade-50 focus-visible:text-transparent hover:text-transparent transition-colors',
+                isActive && '!text-white',
+              ]}
+            >
+              {group.label[locale]}
+            </button>
+          </>
+        );
+      })}
+    </div>
+  </div>
+
+  <div class="container max-lg:mr-0 xl:overflow-hidden" data-tb-viewport>
+    <div
+      class="flex gap-x-[var(--margin)] will-change-transform transition-transform duration-500 ease-out motion-reduce:transition-none"
+      data-tb-track
+    >
+      {TEASER_BOX_GROUPS.map((group, index) => {
+        const isActive = index === 0;
+        return (
+          <div
+            role="tabpanel"
+            id={`tb-content-${index}`}
+            aria-labelledby={`tb-tab-${index}`}
+            inert={!isActive}
+            data-tb-panel={index}
+            class="relative flex w-full basis-full shrink-0 flex-nowrap items-start h-[196px] sm:h-[310px] md:h-[360px] lg:h-[initial] cursor-grab active:cursor-grabbing no-scrollbar overflow-x-auto lg:overflow-visible"
+          >
+            {group.cards.map(card => {
+              const imgConfig = CARD_IMAGE_CONFIG[card.variant];
+              return (
+                <div class="group/card relative max-lg:h-full mr-2 shrink-0 last:mr-0 md:mr-4 lg:shrink overflow-hidden mask-image-[radial-gradient(white,black)] rounded-[5px]">
+                  <Picture
+                    src={card.image}
+                    alt={card.alt[locale]}
+                    formats={['avif', 'webp']}
+                    widths={imgConfig.widths}
+                    sizes={imgConfig.sizes}
+                    loading="lazy"
+                    decoding="async"
+                    class="block [transform:_translateZ(0px)] max-lg:h-full max-lg:w-auto select-none pointer-events-none"
+                  />
+
+                  <div class="before:absolute before:bg-[#061A1C] before:content-[''] before:h-full before:w-full absolute duration-300 flex inset-0 items-center justify-center opacity-0 transition-opacity focus-within:opacity-100 hover:opacity-100">
+                    {/* <a
+                      href={card.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${card.brand} (${card.domain})`}
+                      class="relative z-10 flex items-center justify-center mx-auto max-h-[33.3%] max-w-[85%] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                    >
+                    </a> */}
+                    <span
+                      aria-hidden="true"
+                      class="pointer-events-none relative z-10 flex items-center justify-center mx-auto max-h-[33.3%] max-w-[85%]"
+                    >
+                      <img
+                        src={card.logo.src}
+                        width={card.logo.width}
+                        height={card.logo.height}
+                        alt={`${card.brand} logo`}
+                        loading="lazy"
+                        decoding="async"
+                        class="max-h-full max-w-full object-contain"
+                      />
+                    </span>
+
+                    <a
+                      href={card.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${card.brand} (${card.domain})`}
+                      class="absolute bottom-4 z-10 hidden items-center md:flex text-white text-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                    >
+                      {card.domain}
+                    </a>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>
+
+<script>
+  import '../../scripts/teaser-box';
+</script>
