@@ -73,7 +73,7 @@ const CARD_IMAGE_CONFIG: Record<
 
   <div class="container max-lg:mr-0 xl:overflow-hidden" data-tb-viewport>
     <div
-      class="flex gap-x-[var(--margin)] will-change-transform transition-transform duration-500 ease-out motion-reduce:transition-none"
+      class="flex space-x-[var(--margin)] opacity-100 will-change-transform transition-transform duration-500 ease-out motion-reduce:transition-none"
       data-tb-track
     >
       {TEASER_BOX_GROUPS.map((group, index) => {
@@ -85,12 +85,16 @@ const CARD_IMAGE_CONFIG: Record<
             aria-labelledby={`tb-tab-${index}`}
             inert={!isActive}
             data-tb-panel={index}
-            class="relative flex w-full basis-full shrink-0 flex-nowrap items-start h-[196px] sm:h-[310px] md:h-[360px] lg:h-[initial] cursor-grab active:cursor-grabbing no-scrollbar overflow-x-auto lg:overflow-visible"
+            class="relative flex shrink-0 flex-nowrap lg:basis-full items-start h-[196px] sm:h-[310px] md:h-[360px] lg:h-[initial] max-lg:last:mr-[var(--margin)] cursor-grab active:cursor-grabbing no-scrollbar overflow-x-scroll"
           >
             {group.cards.map(card => {
               const imgConfig = CARD_IMAGE_CONFIG[card.variant];
+              const ar = card.image.width / card.image.height;
               return (
-                <div class="group/card relative max-lg:h-full mr-2 shrink-0 last:mr-0 md:mr-4 lg:shrink overflow-hidden mask-image-[radial-gradient(white,black)] rounded-[5px]">
+                <div
+                  class="relative max-lg:h-full mr-2 shrink-0 max-lg:last:mr-[var(--margin)] md:mr-4 lg:basis-0 lg:grow-(--ar-tb) overflow-hidden mask-image-[radial-gradient(white,black)] rounded-[5px]"
+                  style={`--ar-tb: ${ar};`}
+                >
                   <Picture
                     src={card.image}
                     alt={card.alt[locale]}
@@ -99,10 +103,11 @@ const CARD_IMAGE_CONFIG: Record<
                     sizes={imgConfig.sizes}
                     loading="lazy"
                     decoding="async"
-                    class="block [transform:_translateZ(0px)] max-lg:h-full max-lg:w-auto select-none pointer-events-none"
+                    pictureAttributes={{class: 'contents'}}
+                    class="[transform:_translateZ(0px)] max-lg:h-full max-lg:w-auto"
                   />
 
-                  <div class="before:absolute before:bg-[#061A1C] before:content-[''] before:h-full before:w-full absolute duration-300 flex inset-0 items-center justify-center opacity-0 transition-opacity focus-within:opacity-100 hover:opacity-100">
+                  <div class="before:absolute before:bg-[#061A1C] before:content-[''] before:h-full before:w-full absolute duration-300 flex inset-0 items-center justify-center opacity-0 transition-opacity focus-within:opacity-100 hover:opacity-100 select-none">
                     {/* <a
                       href={card.href}
                       target="_blank"
