@@ -1,0 +1,98 @@
+---
+import {Picture} from 'astro:assets';
+import AmbientVideo from '../media/AmbientVideo.astro';
+import {getRoutePath, type Locale} from '../../data/routes';
+import {
+  CASUAL_COPY,
+  CASUAL_ICONS,
+  CASUAL_POSTER,
+  CASUAL_VIDEO_SOURCES,
+} from '../../data/home/casual';
+
+interface Props {
+  locale: Locale;
+}
+
+const {locale} = Astro.props;
+const copy = CASUAL_COPY[locale];
+const ctaHref = getRoutePath('agentic-storefronts', locale);
+---
+
+<section
+  class="grid gap-y-2xl grid-cols-full pb-2xl bg-section-dark-bg text-section-dark-text pt-2xl"
+  data-section-name="casual"
+  data-component-name="home-casual-section"
+  data-mode="dark"
+>
+  <div class="container">
+    <div class="relative overflow-hidden rounded-2xl bg-[#061A1C] md:bg-[linear-gradient(290.7deg,#061A1C_58.79%,#0D3A2D_100%)] after:pointer-events-none after:absolute after:inset-0 after:z-10 after:rounded-2xl after:shadow-[inset_0_1px_0_0_rgba(64,71,77,0.4)] grid grid-cols-1 md:grid-cols-2">
+      <div class="flex flex-col gap-4 p-6 md:justify-between md:p-10">
+        <div class="flex items-center">
+          {CASUAL_ICONS.map(icon => (
+            <div
+              class:list={[
+                'relative flex items-center justify-center rounded-full bg-white size-10 md:size-14 shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_1px_3px_0_rgba(0,0,0,0.3),0_5px_10px_0_rgba(0,0,0,0.2)]',
+                icon.overlap && '-ms-3 md:-ms-4',
+              ]}
+              style={{zIndex: icon.zIndex}}
+            >
+              {icon.src.format === 'svg' ? (
+                <img
+                  src={icon.src.src}
+                  width={icon.src.width}
+                  height={icon.src.height}
+                  alt={icon.alt}
+                  loading="lazy"
+                  decoding="async"
+                  class="size-5 md:size-7"
+                />
+              ) : (
+                <Picture
+                  src={icon.src}
+                  alt={icon.alt}
+                  formats={['avif', 'webp']}
+                  widths={[28, 56]}
+                  sizes="(min-width: 48rem) 28px, 20px"
+                  loading="lazy"
+                  decoding="async"
+                  class="size-5 md:size-7 object-contain"
+                />
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div class="pb-0">
+            <h2 class="richtext text-t2 text-white text-balance">
+              {copy.heading}
+            </h2>
+          </div>
+          <p class="text-body-base text-gray-a text-pretty lg:max-w-3/4 [&_a]:underline [&_a]:hover:text-white [&_a]:hover:no-underline">
+            {copy.bodyBeforeLink}
+            <a data-component-name="cta-agentic-storefronts" href={ctaHref}>
+              {copy.linkLabel}
+            </a>
+            {copy.bodyAfterLink}
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-center pt-6 md:p-0">
+        <AmbientVideo
+          image={CASUAL_POSTER}
+          sources={CASUAL_VIDEO_SOURCES}
+          loadStrategy="visible"
+          isLcp={false}
+          pauseOffscreen={true}
+          aspectClass="aspect-[2090/1742]"
+          bgClass="bg-transparent"
+          widths={[360, 540, 720, 1045, 1440]}
+          sizes="(min-width: 48rem) 50vw, 100vw"
+          class="w-full"
+          quality={80}
+        />
+      </div>
+    </div>
+  </div>
+</section>

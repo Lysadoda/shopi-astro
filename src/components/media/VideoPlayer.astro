@@ -14,6 +14,7 @@ interface Props {
   muted?: boolean;
   aspectClass?: string;
   bgClass?: string;
+  mediaClass?: string;
   widths?: number[];
   sizes?: string;
   captionsSrc?: string;
@@ -33,6 +34,7 @@ const {
   muted = false,
   aspectClass = 'aspect-video',
   bgClass = 'bg-black',
+  mediaClass = 'object-cover',
   widths = [480, 800, 1280],
   sizes = '(min-width: 64rem) 1024px, 100vw',
   captionsSrc,
@@ -41,6 +43,9 @@ const {
   class: className = '',
 } = Astro.props;
 
+const hasPositionUtility = /\b(relative|absolute|fixed|sticky|static)\b/.test(
+  className,
+);
 const normalizedSources = normalizeVideoSources(sources);
 const sharedPictureProps = {
   alt,
@@ -49,14 +54,20 @@ const sharedPictureProps = {
   sizes,
   priority: isLcp,
   pictureAttributes: {class: 'block size-full'},
-  class: 'size-full object-cover',
+  class: ['size-full', mediaClass].filter(Boolean).join(' '),
 };
 ---
 
 <div
   data-video-container
   data-video-facade="true"
-  class:list={['relative overflow-hidden', aspectClass, bgClass, className]}
+  class:list={[
+    !hasPositionUtility && 'relative',
+    'overflow-hidden',
+    aspectClass,
+    bgClass,
+    className,
+  ]}
 >
   {typeof image === 'string' ? (
     <Picture src={image} inferSize {...sharedPictureProps} />
@@ -68,7 +79,7 @@ const sharedPictureProps = {
     type="button"
     data-video-play
     aria-label={playLabel}
-    class="group absolute inset-0 flex items-center justify-center bg-black/20 transition-colors hover:bg-black/35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white cursor-pointer"
+    class="group absolute inset-0 z-10 flex items-center justify-center bg-black/20 transition-colors hover:bg-black/35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white cursor-pointer"
   >
     <span class="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-black shadow-lg transition-transform group-hover:scale-105">
       <svg
@@ -82,12 +93,17 @@ const sharedPictureProps = {
   </button>
 
   <video
-    class="hidden size-full object-cover"
+    class:list={[
+      'pointer-events-none absolute inset-0 size-full opacity-0 transition-opacity duration-200',
+      mediaClass,
+    ]}
     controls={controls}
     muted={muted}
     loop={loop}
     playsinline
     preload="none"
+    aria-hidden="true"
+    tabindex="-1"
     data-facade-video="true"
     data-sources={JSON.stringify(normalizedSources)}
   >

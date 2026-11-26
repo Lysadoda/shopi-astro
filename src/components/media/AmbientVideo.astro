@@ -1,5 +1,5 @@
 ---
-import type {ImageMetadata, ImageOutputFormat} from 'astro';
+import type {ImageMetadata, ImageOutputFormat, GetImageResult} from 'astro';
 import {getImage, Picture} from 'astro:assets';
 import {
   normalizeVideoSources,
@@ -10,6 +10,7 @@ import {
 interface CommonProps {
   desktopMedia?: string;
   loadStrategy?: VideoLoadStrategy;
+  /** Set `true` ONLY on the single above-the-fold LCP hero instance. */
   isLcp?: boolean;
   pauseOffscreen?: boolean;
   quality?: number;
@@ -48,7 +49,7 @@ const props = Astro.props;
 const {
   desktopMedia = '(min-width: 64rem)',
   loadStrategy = 'idle',
-  isLcp = loadStrategy !== 'visible',
+  isLcp = false,
   pauseOffscreen = true,
   quality = 72,
   widths = [480, 768, 1024, 1440],
@@ -59,79 +60,91 @@ const {
   aspectClass = '',
   bgClass = 'bg-black',
   mediaClass = '',
-  class: className = 'relative',
+  class: className = '',
 } = props;
 
-const isResponsive = props.desktopImage !== undefined;
+const hasPositionUtility = /\b(relative|absolute|fixed|sticky|static)\b/.test(
+  className,
+);
 const isRemote = (src: ImageMetadata | string) => typeof src === 'string';
 
-const responsiveAssets = isResponsive
-  ? await (async () => {
-      const [mobileAvif, mobileWebp, desktopAvif, desktopWebp] =
-        await Promise.all([
-          getImage({
-            src: props.mobileImage,
-            format: 'avif',
-            widths: mobileWidths,
-            quality,
-            ...(isRemote(props.mobileImage) ? {inferSize: true} : {}),
-          }),
-          getImage({
-            src: props.mobileImage,
-            format: 'webp',
-            widths: mobileWidths,
-            quality,
-            ...(isRemote(props.mobileImage) ? {inferSize: true} : {}),
-          }),
-          getImage({
-            src: props.desktopImage,
-            format: 'avif',
-            widths: desktopWidths,
-            quality,
-            ...(isRemote(props.desktopImage) ? {inferSize: true} : {}),
-          }),
-          getImage({
-            src: props.desktopImage,
-            format: 'webp',
-            widths: desktopWidths,
-            quality,
-            ...(isRemote(props.desktopImage) ? {inferSize: true} : {}),
-          }),
-        ]);
-      return {mobileAvif, mobileWebp, desktopAvif, desktopWebp};
-    })()
-  : null;
+let responsiveAssets: {
+  mobileAvif: GetImageResult;
+  mobileWebp: GetImageResult;
+  desktopAvif: GetImageResult;
+  desktopWebp: GetImageResult;
+} | null = null;
 
-const singlePictureProps = !isResponsive
-  ? {
-      alt,
-      formats: ['avif', 'webp'] as ImageOutputFormat[],
-      widths,
-      sizes,
+let singleImage: ImageMetadata | string | null = null;
+let singleSources: VideoSource[] | null = null;
+let mobileVideoSources: VideoSource[] | null = null;
+let desktopVideoSources: VideoSource[] | null = null;
+
+if (props.desktopImage !== undefined) {
+  const {desktopImage, mobileImage, desktopSources, mobileSources} = props;
+  const [mobileAvif, mobileWebp, desktopAvif, desktopWebp] = await Promise.all([
+    getImage({
+      src: mobileImage,
+      format: 'avif',
+      widths: mobileWidths,
       quality,
-      priority: isLcp,
-      pictureAttributes: {class: 'block size-full'},
-      class: ['size-full object-cover', mediaClass].filter(Boolean).join(' '),
-    }
-  : null;
+      ...(isRemote(mobileImage) ? {inferSize: true} : {}),
+    }),
+    getImage({
+      src: mobileImage,
+      format: 'webp',
+      widths: mobileWidths,
+      quality,
+      ...(isRemote(mobileImage) ? {inferSize: true} : {}),
+    }),
+    getImage({
+      src: desktopImage,
+      format: 'avif',
+      widths: desktopWidths,
+      quality,
+      ...(isRemote(desktopImage) ? {inferSize: true} : {}),
+    }),
+    getImage({
+      src: desktopImage,
+      format: 'webp',
+      widths: desktopWidths,
+      quality,
+      ...(isRemote(desktopImage) ? {inferSize: true} : {}),
+    }),
+  ]);
 
-const singleSources = !isResponsive
-  ? normalizeVideoSources(props.sources)
-  : null;
-const mobileVideoSources = isResponsive
-  ? normalizeVideoSources(props.mobileSources)
-  : null;
-const desktopVideoSources = isResponsive
-  ? normalizeVideoSources(props.desktopSources)
-  : null;
+  responsiveAssets = {mobileAvif, mobileWebp, desktopAvif, desktopWebp};
+  mobileVideoSources = normalizeVideoSources(mobileSources);
+  desktopVideoSources = normalizeVideoSources(desktopSources);
+} else {
+  singleImage = props.image;
+  singleSources = normalizeVideoSources(props.sources);
+}
+
+const singlePictureProps = {
+  alt,
+  formats: ['avif', 'webp'] as ImageOutputFormat[],
+  widths,
+  sizes,
+  quality,
+  priority: isLcp,
+  pictureAttributes: {class: 'block size-full'},
+  class: ['size-full object-cover', mediaClass].filter(Boolean).join(' '),
+};
 ---
 
 <div
   data-video-container
-  class:list={['overflow-hidden', aspectClass, bgClass, className]}
+  class:list={[
+    !hasPositionUtility && 'relative',
+    'overflow-hidden',
+    aspectClass,
+    bgClass,
+    className,
+  ]}
   aria-hidden={alt === '' ? 'true' : undefined}
 >
-  {isResponsive && responsiveAssets ? (
+  {responsiveAssets ? (
     <picture class="block size-full">
       <source
         media={desktopMedia}
@@ -165,17 +178,16 @@ const desktopVideoSources = isResponsive
         alt={alt}
         loading={isLcp ? 'eager' : 'lazy'}
         decoding={isLcp ? 'sync' : 'async'}
-        fetchpriority={isLcp ? 'high' : 'auto'}
+        fetchpriority={isLcp ? 'high' : undefined}
         class:list={['size-full object-cover', mediaClass]}
       />
     </picture>
   ) : (
-    !isResponsive &&
-    singlePictureProps &&
-    (isRemote(props.image) ? (
-      <Picture src={props.image} inferSize {...singlePictureProps} />
+    singleImage &&
+    (isRemote(singleImage) ? (
+      <Picture src={singleImage} inferSize {...singlePictureProps} />
     ) : (
-      <Picture src={props.image} {...singlePictureProps} />
+      <Picture src={singleImage} {...singlePictureProps} />
     ))
   )}
 
@@ -196,7 +208,7 @@ const desktopVideoSources = isResponsive
     data-autoplay="true"
     data-load-strategy={loadStrategy}
     data-pause-offscreen={String(pauseOffscreen)}
-    data-desktop-media={isResponsive ? desktopMedia : undefined}
+    data-desktop-media={responsiveAssets ? desktopMedia : undefined}
     data-mobile-sources={
       mobileVideoSources ? JSON.stringify(mobileVideoSources) : undefined
     }
