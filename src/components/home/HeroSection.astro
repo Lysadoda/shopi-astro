@@ -2,9 +2,6 @@
 import AmbientVideo from '../media/AmbientVideo.astro';
 import heroDesktopImg from '../../assets/media/home/hero1440.jpg';
 import heroMobileImg from '../../assets/media/home/hero480.jpg';
-// import MediaPicture from '../common/MediaPicture.astro';
-// import heroPoster from '../../assets/hero-poster.png';
-// import LazyVideo from '../common/LazyVideo.astro';
 import {getHomePageContent, type HomePageContent} from '../../data/homepage';
 import {
   SIGNUP_BASE_URL,
@@ -60,7 +57,8 @@ const heroMediaCropClass =
       {src: '/videos/hero-mobile.mp4', type: 'video/mp4'},
     ]}
     loadStrategy="idle"
-    class="absolute inset-0 h-full w-full"
+    class="absolute inset-0 size-full"
+    mediaClass="object-center max-[480px]:h-[101.5%] max-[480px]:object-[54.8%_center]"
   />
 
   <div class="container pt-4xl pb-xl md:pb-3xl z-20 flex flex-col justify-between gap-y-lg sm:min-h-min sm:justify-end sm:pt-[165px] lg:pt-[225px] max-sm:max-w-[calc(100vw-(var(--margin)*2))]! overflow-hidden">
@@ -172,6 +170,7 @@ const heroMediaCropClass =
                 </div>
 
                 <div class="pt-2">
+                  <!-- TODO class, active ring -->
                   <button
                     type="submit"
                     class="inline-block self-center overflow-hidden max-w-full px-button-px py-button-py ring-inset rounded-button text-button-size font-button-font font-button-weight tracking-button-tracking transition-all duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-state-focus focus-visible:outline border-2 text-button-dark-primary-text bg-button-dark-primary-bg border-button-dark-primary-border hover:text-button-dark-primary-text-hover hover:bg-button-dark-primary-bg-hover active:bg-button-dark-primary-bg-active w-full h-14"
