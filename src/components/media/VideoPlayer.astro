@@ -1,24 +1,19 @@
 ---
 import type {ImageMetadata, ImageOutputFormat} from 'astro';
 import {Picture} from 'astro:assets';
-import {
-  normalizeVideoSources,
-  type VideoLoadStrategy,
-  type VideoSource,
-} from '../../lib/media';
+import {normalizeVideoSources, type VideoSource} from '../../lib/media';
 
 interface Props {
   image: ImageMetadata | string;
   alt: string;
   sources: string | VideoSource[];
   playLabel?: string;
-  loadStrategy?: VideoLoadStrategy;
   isLcp?: boolean;
   controls?: boolean;
-  autoplay?: boolean;
   loop?: boolean;
   muted?: boolean;
-  pauseOffscreen?: boolean;
+  aspectClass?: string;
+  bgClass?: string;
   widths?: number[];
   sizes?: string;
   captionsSrc?: string;
@@ -32,13 +27,12 @@ const {
   alt,
   sources,
   playLabel = `Play video: ${alt}`,
-  loadStrategy = 'visible',
-  isLcp = loadStrategy !== 'visible',
+  isLcp = false,
   controls = true,
-  autoplay = false,
   loop = false,
-  muted = autoplay,
-  pauseOffscreen = autoplay,
+  muted = false,
+  aspectClass = 'aspect-video',
+  bgClass = 'bg-black',
   widths = [480, 800, 1280],
   sizes = '(min-width: 64rem) 1024px, 100vw',
   captionsSrc,
@@ -54,60 +48,47 @@ const sharedPictureProps = {
   widths,
   sizes,
   priority: isLcp,
-  pictureAttributes: {class: 'block h-full w-full'},
-  class: 'h-full w-full object-cover',
+  pictureAttributes: {class: 'block size-full'},
+  class: 'size-full object-cover',
 };
 ---
 
 <div
   data-video-container
-  data-video-facade={autoplay ? undefined : 'true'}
-  class:list={['relative overflow-hidden aspect-video bg-black', className]}
+  data-video-facade="true"
+  class:list={['relative overflow-hidden', aspectClass, bgClass, className]}
 >
   {typeof image === 'string' ? (
-    // TODO if local posters should always be bundled from src/, tighten image to ImageMetadata and remove inferSize entirely
     <Picture src={image} inferSize {...sharedPictureProps} />
   ) : (
     <Picture src={image} {...sharedPictureProps} />
   )}
 
-  {!autoplay && (
-    <button
-      type="button"
-      data-video-play
-      aria-label={playLabel}
-      class="group absolute inset-0 flex items-center justify-center bg-black/20 transition-colors hover:bg-black/35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white cursor-pointer"
-    >
-      <span class="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-black shadow-lg transition-transform group-hover:scale-105">
-        <svg
-          viewBox="0 0 24 24"
-          class="h-6 w-6 translate-x-0.5 fill-current"
-          aria-hidden="true"
-        >
-          <path d="M8 5v14l11-7z" />
-        </svg>
-      </span>
-    </button>
-  )}
+  <button
+    type="button"
+    data-video-play
+    aria-label={playLabel}
+    class="group absolute inset-0 flex items-center justify-center bg-black/20 transition-colors hover:bg-black/35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white cursor-pointer"
+  >
+    <span class="flex h-16 w-16 items-center justify-center rounded-full bg-white/90 text-black shadow-lg transition-transform group-hover:scale-105">
+      <svg
+        viewBox="0 0 24 24"
+        class="h-6 w-6 translate-x-0.5 fill-current"
+        aria-hidden="true"
+      >
+        <path d="M8 5v14l11-7z" />
+      </svg>
+    </span>
+  </button>
 
   <video
-    class:list={[
-      'h-full w-full object-cover',
-      autoplay
-        ? 'absolute inset-0 opacity-0 transition-opacity duration-300'
-        : 'hidden',
-    ]}
+    class="hidden size-full object-cover"
     controls={controls}
     muted={muted}
     loop={loop}
     playsinline
     preload="none"
-    data-smart-video={autoplay ? 'true' : undefined}
-    data-facade-video={!autoplay ? 'true' : undefined}
-    data-ambient="false"
-    data-autoplay={String(autoplay)}
-    data-load-strategy={autoplay ? loadStrategy : undefined}
-    data-pause-offscreen={String(pauseOffscreen)}
+    data-facade-video="true"
     data-sources={JSON.stringify(normalizedSources)}
   >
     {captionsSrc && (
